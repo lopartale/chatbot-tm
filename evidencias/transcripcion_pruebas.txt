@@ -1,0 +1,189 @@
+===== C01 Saludo y ayuda =====
+Tú : Hola
+Bot: ¡Hola! Soy el asistente de servicios REST. Descríbeme la funcionalidad o la pantalla que necesitas y te digo qué servicios del inventario la cubren.
+     [intención: charla | esperada: charla | OK]
+Tú : ¿Qué puedes hacer?
+Bot: Puedo ayudarte a:
+       1) Buscar un servicio por funcionalidad (ej. 'servicio para consultar saldo').
+       2) Analizar un requerimiento o pantalla con varias funciones y mostrar la cobertura.
+       3) Ver el detalle o contrato de un servicio (ej. 'detalle de SRV-007').
+       4) Listar los dominios y servicios del inventario.
+       5) Orientarte cuando exista una brecha (funcionalidad sin servicio).
+     [intención: charla | esperada: charla | OK]
+Tú : Gracias
+Bot: Con gusto. ¿Quieres analizar otro requerimiento?
+     [intención: charla | esperada: charla | OK]
+
+===== C02 Búsqueda simple =====
+Tú : ¿Existe un servicio para consultar el saldo de una cuenta?
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-007 Consulta de saldo [GET /api/v1/cuentas/{idCuenta}/saldo] - puntaje 3.07
+       2) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.07
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+Tú : Dame el detalle del primero
+Bot: SRV-007 - Consulta de saldo (dominio Cuentas)
+       Método/endpoint: GET /api/v1/cuentas/{idCuenta}/saldo
+       Descripción: Devuelve el saldo disponible y el saldo contable de una cuenta.
+       Entrada: idCuenta
+       Salida: saldoDisponible, saldoContable, moneda
+       Equipo responsable: Cuentas
+     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+
+===== C03 Búsqueda con sinónimo =====
+Tú : Necesito una API de login para que el usuario pueda ingresar
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-001 Autenticación de usuario [POST /api/v1/auth/login] - puntaje 2.0
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+Tú : ¿Cuál es el contrato?
+Bot: SRV-001 - Autenticación de usuario (dominio Seguridad)
+       Método/endpoint: POST /api/v1/auth/login
+       Descripción: Valida credenciales y devuelve un token de acceso JWT.
+       Entrada: usuario, contraseña
+       Salida: token, expiracion, perfil
+       Equipo responsable: Plataforma
+     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+
+===== C04 Requerimiento de pantalla completo =====
+Tú : Requerimiento: pantalla para buscar un cliente por RFC, mostrar su saldo, consultar movimientos y registrar un pago
+Bot: Analicé 4 necesidades funcionales. Cobertura: 100%.
+       [OK] 'pantalla para buscar un cliente por rfc' -> SRV-004 Búsqueda de clientes (GET /api/v1/clientes?nombre=&rfc=)
+       [OK] 'mostrar su saldo' -> SRV-007 Consulta de saldo (GET /api/v1/cuentas/{idCuenta}/saldo)
+       [OK] 'consultar movimientos' -> SRV-008 Consulta de movimientos (GET /api/v1/cuentas/{idCuenta}/movimientos)
+       [OK] 'registrar un pago' -> SRV-010 Registro de pago (POST /api/v1/pagos)
+     [intención: analizar_requerimiento | esperada: analizar_requerimiento | OK]
+Tú : detalle del tercero
+Bot: SRV-008 - Consulta de movimientos (dominio Cuentas)
+       Método/endpoint: GET /api/v1/cuentas/{idCuenta}/movimientos
+       Descripción: Lista los movimientos de una cuenta en un rango de fechas.
+       Entrada: idCuenta, fechaInicio, fechaFin
+       Salida: lista de movimientos
+       Equipo responsable: Cuentas
+     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+
+===== C05 Requerimiento con brecha =====
+Tú : Necesito una pantalla de alta de cliente, validar el código postal, calcular el score crediticio y enviar un correo de bienvenida
+Bot: Analicé 4 necesidades funcionales. Cobertura: 75%.
+       [OK] 'alta de cliente' -> SRV-005 Alta de cliente (POST /api/v1/clientes)
+       [OK] 'validar el codigo postal' -> SRV-016 Consulta de código postal (GET /api/v1/catalogos/codigos-postales/{cp})
+       [OK] 'enviar un correo de bienvenida' -> SRV-015 Envío de notificaciones (POST /api/v1/notificaciones)
+       [BRECHA] 'calcular el score crediticio' -> sin servicio en el inventario
+     Sugerencia: valida las brechas con el equipo de arquitectura antes de crear un servicio nuevo.
+     [intención: analizar_requerimiento | esperada: analizar_requerimiento | OK]
+Tú : ¿Qué hago si no existe el servicio?
+Bot: Cuando una funcionalidad no tiene servicio (brecha), te sugiero: 
+       1) Reformular con otros términos o revisar servicios similares.
+       2) Verificar si un servicio existente puede extenderse.
+       3) Registrar la brecha con el equipo de arquitectura para evaluar un servicio nuevo.
+     [intención: reportar_brecha | esperada: reportar_brecha | OK]
+
+===== C06 Exploración del inventario =====
+Tú : ¿Qué servicios hay en el inventario?
+Bot: El inventario tiene 17 servicios en estos dominios:
+       - Catálogos: 1 servicio(s)
+       - Clientes: 4 servicio(s)
+       - Cuentas: 3 servicio(s)
+       - Documentos: 1 servicio(s)
+       - Notificaciones: 1 servicio(s)
+       - Pagos: 2 servicio(s)
+       - Pedidos: 2 servicio(s)
+       - Productos: 1 servicio(s)
+       - Seguridad: 2 servicio(s)
+     Pide, por ejemplo, 'servicios de pagos' para ver el detalle de un dominio.
+     [intención: listar_dominios | esperada: listar_dominios | OK]
+Tú : Muéstrame los servicios de pagos
+Bot: Servicios del dominio Pagos:
+       - SRV-010 Registro de pago [POST /api/v1/pagos]
+       - SRV-011 Consulta de estatus de pago [GET /api/v1/pagos/{idPago}]
+     [intención: listar_por_dominio | esperada: listar_por_dominio | OK]
+Tú : Detalle de SRV-011
+Bot: SRV-011 - Consulta de estatus de pago (dominio Pagos)
+       Método/endpoint: GET /api/v1/pagos/{idPago}
+       Descripción: Consulta el estatus de un pago registrado.
+       Entrada: idPago
+       Salida: estatus, fecha, monto
+       Equipo responsable: Pagos
+     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+
+===== C07 Consulta directa por ID =====
+Tú : srv-13
+Bot: SRV-013 - Creación de pedido (dominio Pedidos)
+       Método/endpoint: POST /api/v1/pedidos
+       Descripción: Crea un pedido a partir de un carrito de compra.
+       Entrada: idCliente, productos, direccionEntrega
+       Salida: idPedido, total
+       Equipo responsable: Comercio
+     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+Tú : ¿Hay servicio para ver el historial de pedidos del cliente?
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-014 Historial de pedidos [GET /api/v1/clientes/{idCliente}/pedidos] - puntaje 2.33
+       2) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.0
+       3) SRV-013 Creación de pedido [POST /api/v1/pedidos] - puntaje 1.0
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+
+===== C08 Imagen de pantalla (fuera de v1) =====
+Tú : Te comparto la imagen del mockup de Figma
+Bot: El análisis de imágenes de pantallas aún no está disponible en esta versión. Se incorporará en el Avance 2 con clasificación de imágenes. Por ahora, describe en texto los elementos de la pantalla (campos, botones, acciones).
+     [intención: analizar_imagen | esperada: analizar_imagen | OK]
+Tú : Pantalla con catálogo de productos, carrito de compra y pago con tarjeta
+Bot: Analicé 3 necesidades funcionales. Cobertura: 100%.
+       [OK] 'catalogo de productos' -> SRV-012 Catálogo de productos (GET /api/v1/productos)
+       [OK] 'carrito de compra' -> SRV-013 Creación de pedido (POST /api/v1/pedidos)
+       [OK] 'pago con tarjeta' -> SRV-010 Registro de pago (POST /api/v1/pagos)
+     [intención: analizar_requerimiento | esperada: analizar_requerimiento | OK]
+
+===== C09 Sin palabra disparadora =====
+Tú : transacciones de la cuenta del último mes
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 2.67
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+Tú : estado de cuenta en pdf
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-009 Estado de cuenta [GET /api/v1/cuentas/{idCuenta}/estado-cuenta] - puntaje 2.67
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+
+===== C10 Fuera de alcance =====
+Tú : ¿Cuál es el clima en Monterrey?
+Bot: No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos.
+     [intención: fuera_de_alcance | esperada: fuera_de_alcance | OK]
+Tú : Cuéntame un chiste
+Bot: No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos.
+     [intención: fuera_de_alcance | esperada: fuera_de_alcance | OK]
+Tú : ayuda
+Bot: Puedo ayudarte a:
+       1) Buscar un servicio por funcionalidad (ej. 'servicio para consultar saldo').
+       2) Analizar un requerimiento o pantalla con varias funciones y mostrar la cobertura.
+       3) Ver el detalle o contrato de un servicio (ej. 'detalle de SRV-007').
+       4) Listar los dominios y servicios del inventario.
+       5) Orientarte cuando exista una brecha (funcionalidad sin servicio).
+     [intención: charla | esperada: charla | OK]
+
+===== C11 Documentos y notificaciones =====
+Tú : Necesito subir la identificación del cliente y avisarle por SMS
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-017 Carga de documentos [POST /api/v1/documentos] - puntaje 2.17
+       2) SRV-015 Envío de notificaciones [POST /api/v1/notificaciones] - puntaje 2.0
+       3) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.0
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+Tú : Formulario para adjuntar comprobante de domicilio y actualizar el teléfono del cliente
+Bot: Analicé 2 necesidades funcionales. Cobertura: 100%.
+       [OK] 'adjuntar comprobante de domicilio' -> SRV-017 Carga de documentos (POST /api/v1/documentos)
+       [OK] 'actualizar el telefono del cliente' -> SRV-006 Actualización de datos de contacto (PATCH /api/v1/clientes/{idCliente}/contacto)
+     [intención: analizar_requerimiento | esperada: analizar_requerimiento | OK]
+
+===== C12 Cierre de sesión y despedida =====
+Tú : ¿Existe un endpoint de logout?
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-002 Cierre de sesión [POST /api/v1/auth/logout] - puntaje 2.0
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+Tú : Adiós
+Bot: ¡Hasta luego! Recuerda reutilizar antes de construir.
+     [intención: charla | esperada: charla | OK]
+
+Precisión de intenciones: 27/27 = 100.0%

@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Chatbot interactivo",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chatbot_servicios.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Pruebas de conversaciones",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/pruebas_conversaciones.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

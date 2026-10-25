@@ -1,0 +1,11 @@
+OK    | quiero saber cuánto dinero tiene el cliente   | esperado=SRV-007 | obtenido=SRV-007
+OK    | cambiar el correo electrónico del cliente     | esperado=SRV-006 | obtenido=SRV-006
+FALLA | cancelar un pedido                            | esperado=None | obtenido=SRV-013
+OK    | solicitar un reembolso                        | esperado=None | obtenido=None
+OK    | ver las compras que hizo el cliente           | esperado=SRV-014 | obtenido=SRV-014
+OK    | dar de baja a un cliente                      | esperado=None | obtenido=None
+FALLA | recuperar contraseña olvidada                 | esperado=None | obtenido=SRV-001
+OK    | enviar una alerta push                        | esperado=SRV-015 | obtenido=SRV-015
+OK    | precio de un artículo                         | esperado=SRV-012 | obtenido=SRV-012
+FALLA | descargar el comprobante del pago             | esperado=None | obtenido=SRV-009
+Aciertos en generalización: 7/10

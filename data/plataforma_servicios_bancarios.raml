@@ -1,0 +1,1825 @@
+#%RAML 1.0
+title: Plataforma de Servicios Bancarios
+version: v1
+baseUri: https://banfake.mx/v1
+protocols: [ HTTPS ]
+mediaType: application/json
+description: |
+  API REST bancaria que agrupa diez recursos de negocio y capacidades técnicas para
+  consultar clientes y productos, administrar cuentas, originar préstamos e hipotecas,
+  realizar transferencias y pagos, consultar seguros, autenticar usuarios, proteger
+  información y generar documentos. Todas las operaciones requieren HTTPS. Las
+  operaciones que mueven dinero o cambian contratos deben aplicar controles de
+  autorización, idempotencia, auditoría y validación de límites antes de ejecutarse.
+
+documentation:
+  - title: Convenciones generales
+    content: |
+      Los identificadores son opacos y no deben interpretarse como datos de negocio.
+      Las fechas y horas se expresan en formato ISO 8601 con zona horaria. Los importes
+      se representan como números decimales y siempre incluyen moneda ISO 4217.
+      Los errores usan un objeto uniforme con código, mensaje, identificador de rastreo
+      y detalles opcionales. Nunca se deben enviar contraseñas, claves privadas ni datos
+      completos de tarjetas en registros de aplicación.
+      Las consultas de colecciones se paginan con los parámetros de entrada pageSize y
+      paginationKey del tipo Pagination; cada respuesta devuelve la paginationKey que
+      debe enviarse para obtener la página siguiente.
+  - title: Seguridad y autorización
+    content: |
+      Las llamadas se realizan por HTTPS y utilizan un token de acceso en el encabezado
+      Authorization, salvo los endpoints expresamente destinados a iniciar sesión o
+      renovar una sesión. Los permisos del token deben limitarse al cliente, producto
+      y operación correspondientes. Para operaciones financieras se recomienda exigir
+      segundo factor, límites transaccionales, evaluación antifraude e idempotencia
+      mediante el encabezado X-Clave-Idempotencia.
+
+securitySchemes:
+  portador:
+    type: Pass Through
+    description: Esquema de acceso basado en un token de portador emitido al iniciar sesión; el token identifica al usuario y limita las operaciones que puede realizar.
+    describedBy:
+      headers:
+        Authorization:
+          type: string
+          required: true
+          description: Token de acceso en formato "Bearer {token}". Identifica la sesión y los permisos autorizados para la solicitud.
+      responses:
+        401:
+          description: La solicitud no contiene un token válido o la sesión expiró.
+        403:
+          description: El token es válido, pero no tiene permisos para la operación o el recurso solicitado.
+
+securedBy: [ portador ]
+
+types:
+  Error:
+    type: object
+    description: Estructura común que explica por qué no pudo completarse una solicitud.
+    properties:
+      codigo:
+        type: string
+        description: Código estable que permite identificar el tipo de error sin analizar el texto.
+      mensaje:
+        type: string
+        description: Explicación breve y legible del error para el consumidor de la API.
+      idRastreo:
+        type: string
+        description: Identificador para localizar la solicitud en los registros de auditoría y soporte.
+      detalles?:
+        type: array
+        description: Lista opcional de campos o reglas que requieren corrección.
+        items:
+          type: object
+          properties:
+            campo: { type: string, description: Nombre del campo de la solicitud que presenta el problema. }
+            descripcion: { type: string, description: Regla incumplida o corrección que debe aplicar el consumidor. }
+  Pagination:
+    type: object
+    description: Parámetros de entrada que controlan el tamaño y la continuación de una consulta paginada.
+    properties:
+      pageSize?:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+        description: Cantidad máxima de elementos que se devolverán en la página.
+      paginationKey?:
+        type: string
+        description: Clave opaca devuelta en la página anterior para continuar la consulta; se omite para obtener la primera página.
+  PaginaResultado:
+    type: object
+    description: Estructura común de las respuestas paginadas; cada consulta agrega la lista de elementos propia del recurso.
+    properties:
+      paginationKey?:
+        type: string
+        description: Clave para solicitar la página siguiente; se envía como paginationKey en la próxima consulta y se omite cuando ya no hay más resultados.
+  Dinero:
+    type: object
+    description: Importe monetario acompañado de la moneda en la que se expresa.
+    properties:
+      monto:
+        type: number
+        minimum: 0
+        description: Cantidad monetaria de la operación, sin símbolo de moneda.
+      moneda:
+        type: string
+        pattern: "^[A-Z]{3}$"
+        description: Código de moneda ISO 4217, por ejemplo MXN o USD.
+  ImportePositivo:
+    type: Dinero
+    description: Importe monetario mayor que cero, usado en operaciones que mueven o solicitan dinero.
+    properties:
+      monto:
+        type: number
+        minimum: 0.01
+        description: Cantidad monetaria de la operación, sin símbolo de moneda; debe ser mayor que cero.
+  EstadoPrestamo:
+    type: string
+    enum: [ recibido, en_evaluacion, aprobado, rechazado, vigente, liquidado, cancelado ]
+    description: Etapa del ciclo de vida de una solicitud o contrato de préstamo.
+  EstadoHipoteca:
+    type: string
+    enum: [ recibida, en_evaluacion, aprobada, rechazada, formalizada, vigente, liquidada, cancelada ]
+    description: Etapa del ciclo de vida de una solicitud o contrato hipotecario.
+  EstadoTransferencia:
+    type: string
+    enum: [ recibida, en_validacion, programada, liquidada, rechazada, cancelada ]
+    description: Etapa de procesamiento de una orden de transferencia.
+  EstadoPago:
+    type: string
+    enum: [ recibido, en_validacion, enviado, aplicado, rechazado ]
+    description: Etapa de procesamiento de un pago de servicio o de crédito.
+  Domicilio:
+    type: object
+    description: Dirección usada para contacto, correspondencia o evaluación del producto.
+    properties:
+      calle: { type: string, description: Nombre de la calle o vialidad del domicilio. }
+      numeroExterior: { type: string, description: Número exterior del inmueble. }
+      numeroInterior?: { type: string, description: "Número interior, departamento o local, cuando exista." }
+      codigoPostal: { type: string, description: Código postal del domicilio. }
+      municipio: { type: string, description: Municipio o alcaldía del domicilio. }
+      estado: { type: string, description: Estado o entidad federativa del domicilio. }
+      pais: { type: string, description: Código de país ISO 3166-1 alfa-2 del domicilio. }
+  ClienteNuevo:
+    type: object
+    description: Datos de identidad y contacto que el consumidor envía para registrar a un cliente.
+    properties:
+      nombre:
+        type: string
+        description: Nombre o nombres legales del cliente.
+      apellidoPaterno:
+        type: string
+        description: Primer apellido conforme a la identificación del cliente.
+      apellidoMaterno?:
+        type: string
+        description: Segundo apellido, cuando corresponda.
+      fechaNacimiento?:
+        type: date-only
+        description: Fecha de nacimiento usada para validar identidad y elegibilidad.
+      correo:
+        type: string
+        description: Correo electrónico de contacto verificado o pendiente de verificación.
+      telefono?:
+        type: string
+        description: Teléfono de contacto en formato internacional.
+      domicilio?:
+        type: Domicilio
+        description: Domicilio principal declarado por el cliente.
+  Cliente:
+    type: ClienteNuevo
+    description: Datos generales y de contacto de una persona registrada en el banco.
+    properties:
+      idCliente:
+        type: string
+        description: Identificador único del cliente dentro del banco.
+      estado:
+        type: string
+        enum: [ activo, pendiente, bloqueado, cerrado ]
+        description: Estado operativo del registro del cliente.
+    example:
+      idCliente: CLI-000245
+      nombre: María Fernanda
+      apellidoPaterno: López
+      apellidoMaterno: Ramírez
+      fechaNacimiento: 1988-04-17
+      correo: maria.lopez@correo-ejemplo.mx
+      telefono: "+525512345678"
+      estado: activo
+      domicilio:
+        calle: Avenida Reforma
+        numeroExterior: "250"
+        numeroInterior: 8B
+        codigoPostal: "06600"
+        municipio: Cuauhtémoc
+        estado: Ciudad de México
+        pais: MX
+  Cuenta:
+    type: object
+    description: Cuenta bancaria que permite mantener saldo y registrar movimientos.
+    properties:
+      idCuenta:
+        type: string
+        description: Identificador único de la cuenta dentro del banco.
+      idCliente:
+        type: string
+        description: Identificador del titular principal de la cuenta.
+      tipo:
+        type: string
+        enum: [ debito, ahorro, nomina, corriente ]
+        description: Modalidad de cuenta y reglas comerciales que le aplican.
+      numeroEnmascarado:
+        type: string
+        description: Número de cuenta parcialmente oculto para presentación segura.
+      saldoDisponible:
+        type: Dinero
+        description: Importe disponible para retiros, pagos o transferencias.
+      estado:
+        type: string
+        enum: [ activa, bloqueada, cancelada, pendiente ]
+        description: Estado operativo de la cuenta.
+    example:
+      idCuenta: CTA-7781203
+      idCliente: CLI-000245
+      tipo: nomina
+      numeroEnmascarado: "****4821"
+      saldoDisponible:
+        monto: 18450.75
+        moneda: MXN
+      estado: activa
+  Movimiento:
+    type: object
+    description: Registro de una entrada o salida de dinero en una cuenta.
+    properties:
+      idMovimiento: { type: string, description: Identificador único del movimiento. }
+      fechaHora: { type: datetime, description: Fecha y hora en que el movimiento fue registrado. }
+      tipo:
+        type: string
+        enum: [ abono, cargo, retencion, liberacion ]
+        description: Naturaleza contable del movimiento.
+      importe: { type: Dinero, description: Importe y moneda del movimiento. }
+      concepto: { type: string, description: Texto breve que explica el motivo del movimiento. }
+      estado:
+        type: string
+        enum: [ aplicado, pendiente, rechazado, reversado ]
+        description: Estado de procesamiento y contabilización del movimiento.
+    example:
+      idMovimiento: MOV-55102931
+      fechaHora: 2026-10-20T14:32:10-06:00
+      tipo: cargo
+      importe:
+        monto: 1500.00
+        moneda: MXN
+      concepto: Pago de renta octubre
+      estado: aplicado
+  SolicitudPrestamo:
+    type: object
+    description: Información necesaria para evaluar una solicitud de crédito personal.
+    properties:
+      idCliente: { type: string, description: Identificador del solicitante del préstamo. }
+      montoSolicitado: { type: ImportePositivo, description: Importe de crédito que solicita el cliente. }
+      plazoMeses: { type: integer, minimum: 1, maximum: 360, description: Número de mensualidades propuestas para pagar el crédito. }
+      destino: { type: string, description: Uso declarado para el financiamiento solicitado. }
+      ingresoMensual: { type: Dinero, description: Ingreso mensual declarado para evaluar capacidad de pago. }
+  Prestamo:
+    type: object
+    description: Solicitud o contrato de préstamo personal con sus condiciones y saldo.
+    properties:
+      idPrestamo: { type: string, description: Identificador de la solicitud o contrato de préstamo. }
+      idCliente: { type: string, description: Identificador del acreditado. }
+      estado: { type: EstadoPrestamo, description: Estado actual de la solicitud o contrato. }
+      montoAprobado?: { type: Dinero, description: "Importe autorizado por el banco, si la solicitud fue aprobada." }
+      tasaAnual?: { type: number, description: Tasa de interés anual expresada como porcentaje. }
+      plazoMeses?: { type: integer, description: Plazo contractual en meses. }
+      saldoPendiente?: { type: Dinero, description: "Capital pendiente de pago, cuando ya existe un contrato." }
+    example:
+      idPrestamo: PRE-009812
+      idCliente: CLI-000245
+      estado: vigente
+      montoAprobado:
+        monto: 80000.00
+        moneda: MXN
+      tasaAnual: 24.5
+      plazoMeses: 36
+      saldoPendiente:
+        monto: 61230.40
+        moneda: MXN
+  Transferencia:
+    type: object
+    description: Instrucción para mover dinero desde una cuenta de origen hacia una cuenta beneficiaria.
+    properties:
+      idCuentaOrigen: { type: string, description: Cuenta de la que se descontará el importe. }
+      cuentaBeneficiaria: { type: string, description: "CLABE, cuenta o identificador bancario de destino según el tipo de transferencia." }
+      bancoDestino?: { type: string, description: Identificador del banco receptor para transferencias interbancarias. }
+      importe: { type: ImportePositivo, description: Importe que se desea transferir. }
+      concepto: { type: string, maxLength: 140, description: Motivo que aparecerá en el comprobante y en los movimientos. }
+      referencia?: { type: string, maxLength: 40, description: Referencia numérica o alfanumérica para conciliación del beneficiario. }
+      fechaEjecucion?: { type: date-only, description: "Fecha solicitada para ejecutar la transferencia; si se omite, se procesa lo antes posible." }
+      idBeneficiario?:
+        type: string
+        description: Beneficiario registrado del cliente; cuando se envía, el banco valida que la cuenta beneficiaria coincida con el registro y aplica su límite diario.
+    example:
+      idCuentaOrigen: CTA-7781203
+      cuentaBeneficiaria: "012180001234567891"
+      bancoDestino: "40012"
+      importe:
+        monto: 1500.00
+        moneda: MXN
+      concepto: Pago de renta octubre
+      referencia: "1024"
+      idBeneficiario: BEN-000731
+  Pago:
+    type: object
+    description: Instrucción de pago de un servicio, crédito o convenio comercial.
+    properties:
+      idCuentaCargo: { type: string, description: Cuenta desde la que se realizará el cargo. }
+      convenio: { type: string, description: Identificador del proveedor o convenio de pago. }
+      referenciaPago: { type: string, description: "Referencia que identifica la factura, servicio o cuenta por pagar." }
+      importe: { type: ImportePositivo, description: Importe a pagar según la obligación o factura. }
+      fechaLimite?: { type: date-only, description: Fecha límite indicada por el proveedor para recibir el pago. }
+    example:
+      idCuentaCargo: CTA-7781203
+      convenio: CONV-LUZ-001
+      referenciaPago: "123456789012"
+      importe:
+        monto: 845.00
+        moneda: MXN
+      fechaLimite: 2026-11-05
+  PagoRegistrado:
+    type: object
+    description: Pago de servicio o convenio ya registrado por el banco, con su resultado de procesamiento.
+    properties:
+      idPago:
+        type: string
+        description: Identificador único del pago para seguimiento y aclaraciones.
+      idCuentaCargo:
+        type: string
+        description: Cuenta de la que se cargó o se cargará el importe.
+      convenio:
+        type: string
+        description: Proveedor o convenio al que se envió el pago.
+      referenciaPago:
+        type: string
+        description: Referencia de la factura, servicio o cuenta pagada.
+      importe:
+        type: Dinero
+        description: Importe del pago.
+      estado:
+        type: EstadoPago
+        description: Estado actual del pago.
+      fechaHora:
+        type: datetime
+        description: Fecha y hora en que el banco recibió la instrucción de pago.
+      folioProveedor?:
+        type: string
+        description: Folio de confirmación entregado por el proveedor cuando acepta el pago.
+      motivoRechazo?:
+        type: string
+        description: Explicación de negocio cuando el pago fue rechazado por el banco o el proveedor.
+    example:
+      idPago: PAG-3301877
+      idCuentaCargo: CTA-7781203
+      convenio: CONV-LUZ-001
+      referenciaPago: "123456789012"
+      importe:
+        monto: 845.00
+        moneda: MXN
+      estado: aplicado
+      fechaHora: 2026-10-21T09:15:00-06:00
+      folioProveedor: CFE-88120034
+  BeneficiarioNuevo:
+    type: object
+    description: Datos de una cuenta de terceros que el cliente registra como destino frecuente de transferencias.
+    properties:
+      alias:
+        type: string
+        maxLength: 40
+        description: Nombre corto con el que el cliente identifica al beneficiario.
+      nombreTitular:
+        type: string
+        description: Nombre del titular de la cuenta destino, usado para validar la operación.
+      tipoCuenta:
+        type: string
+        enum: [ cuenta_interna, clabe, tarjeta_debito ]
+        description: Tipo de identificador bancario de la cuenta destino.
+      cuentaDestino:
+        type: string
+        description: Número de cuenta interna, CLABE o tarjeta de débito del beneficiario según el tipo de cuenta.
+      bancoDestino?:
+        type: string
+        description: Identificador del banco receptor; obligatorio para cuentas de otros bancos.
+      limiteDiario?:
+        type: ImportePositivo
+        description: Importe máximo que el cliente permite transferir a este beneficiario por día.
+      correoNotificacion?:
+        type: string
+        description: Correo al que se enviará el aviso de cada transferencia al beneficiario.
+  Beneficiario:
+    type: BeneficiarioNuevo
+    description: Beneficiario registrado por el cliente, con su estado de activación.
+    properties:
+      idBeneficiario:
+        type: string
+        description: Identificador único del beneficiario dentro del banco.
+      estado:
+        type: string
+        enum: [ pendiente_activacion, activo, bloqueado ]
+        description: Estado del beneficiario; por seguridad, un registro nuevo permanece pendiente durante el periodo de activación definido por el banco.
+      fechaAlta:
+        type: datetime
+        description: Fecha y hora en que el cliente registró al beneficiario.
+    example:
+      idBeneficiario: BEN-000731
+      alias: Arrendador
+      nombreTitular: Jorge Martínez Soto
+      tipoCuenta: clabe
+      cuentaDestino: "012180001234567891"
+      bancoDestino: "40012"
+      limiteDiario:
+        monto: 20000.00
+        moneda: MXN
+      estado: activo
+      fechaAlta: 2026-09-02T18:40:00-06:00
+  SolicitudHipoteca:
+    type: object
+    description: Información necesaria para evaluar una solicitud de crédito garantizado con un inmueble.
+    properties:
+      idCliente: { type: string, description: Identificador del solicitante o acreditado. }
+      valorInmueble: { type: ImportePositivo, description: Valor estimado o avalúo del inmueble ofrecido como garantía. }
+      montoSolicitado: { type: ImportePositivo, description: Importe de financiamiento hipotecario requerido. }
+      plazoAnios: { type: integer, minimum: 1, maximum: 30, description: Plazo solicitado para amortizar el crédito hipotecario. }
+      usoInmueble:
+        type: string
+        enum: [ habitacional, comercial, terreno ]
+        description: Uso principal del inmueble propuesto como garantía.
+  Hipoteca:
+    type: object
+    description: Solicitud o contrato hipotecario con su avance de evaluación, condiciones y saldo.
+    properties:
+      idHipoteca: { type: string, description: Identificador de la solicitud o contrato hipotecario. }
+      idCliente: { type: string, description: Identificador del solicitante o acreditado. }
+      estado: { type: EstadoHipoteca, description: Estado vigente del expediente hipotecario. }
+      montoSolicitado: { type: Dinero, description: Importe de financiamiento solicitado. }
+      montoAprobado?: { type: Dinero, description: "Importe autorizado por el banco, si la solicitud fue aprobada." }
+      tasaAnual?: { type: number, description: "Tasa de interés anual aprobada, expresada como porcentaje." }
+      saldoPendiente?: { type: Dinero, description: Capital hipotecario pendiente de liquidación. }
+    example:
+      idHipoteca: HIP-000412
+      idCliente: CLI-000245
+      estado: en_evaluacion
+      montoSolicitado:
+        monto: 2400000.00
+        moneda: MXN
+  Seguro:
+    type: object
+    description: Póliza de seguro contratada o cotizada a través del banco.
+    properties:
+      idSeguro: { type: string, description: Identificador único de la póliza o cotización. }
+      idCliente: { type: string, description: Identificador del contratante o asegurado principal. }
+      tipo:
+        type: string
+        enum: [ vida, hogar, auto, desempleo, proteccion_pagos ]
+        description: Categoría de protección que ofrece el producto.
+      prima: { type: Dinero, description: Importe de la prima correspondiente al periodo indicado. }
+      periodicidad:
+        type: string
+        enum: [ mensual, trimestral, semestral, anual ]
+        description: Frecuencia con la que debe pagarse la prima.
+      estado:
+        type: string
+        enum: [ cotizado, vigente, vencido, cancelado ]
+        description: Estado comercial y contractual de la póliza.
+    example:
+      idSeguro: SEG-102944
+      idCliente: CLI-000245
+      tipo: vida
+      prima:
+        monto: 450.00
+        moneda: MXN
+      periodicidad: mensual
+      estado: vigente
+  Documento:
+    type: object
+    description: Referencia a un documento generado por el banco.
+    properties:
+      idDocumento: { type: string, description: Identificador único del documento generado. }
+      tipo:
+        type: string
+        enum: [ estado_cuenta, comprobante, contrato, caratula, carta_saldo ]
+        description: Clase de documento que se solicita o se ha generado.
+      estado:
+        type: string
+        enum: [ solicitado, procesando, disponible, fallido, expirado ]
+        description: Estado del proceso de generación y disponibilidad del documento.
+      fechaCreacion: { type: datetime, description: Fecha y hora en que se solicitó o generó el documento. }
+      urlDescarga?: { type: string, description: Enlace temporal autorizado para descargar el documento disponible. }
+    example:
+      idDocumento: DOC-8812045
+      tipo: estado_cuenta
+      estado: disponible
+      fechaCreacion: 2026-10-01T06:00:00-06:00
+      urlDescarga: https://documentos.banfake.mx/descarga/DOC-8812045?firma=abc123
+
+traits:
+  rastreable:
+    usage: Aplicar a toda operación para correlacionar la solicitud con los registros de auditoría y documentar las respuestas de error comunes.
+    headers:
+      X-Id-Rastreo:
+        type: string
+        required: false
+        description: Identificador opcional proporcionado por el consumidor para correlacionar la solicitud con sus registros.
+    responses:
+      400:
+        description: La solicitud contiene datos ausentes, mal formados o que no cumplen las reglas del negocio.
+        body:
+          application/json:
+            type: Error
+      401:
+        description: No se proporcionó un token de acceso válido o la sesión expiró.
+        body:
+          application/json:
+            type: Error
+      403:
+        description: El usuario autenticado no tiene permiso para ejecutar la operación.
+        body:
+          application/json:
+            type: Error
+      404:
+        description: No existe el recurso solicitado o no está visible para el usuario.
+        body:
+          application/json:
+            type: Error
+      429:
+        description: Se excedió el límite de solicitudes permitido para el usuario o la aplicación.
+        body:
+          application/json:
+            type: Error
+      500:
+        description: Ocurrió un error inesperado y la operación no pudo completarse.
+        body:
+          application/json:
+            type: Error
+  idempotente:
+    usage: Aplicar a operaciones que mueven dinero o crean contratos, para que un reintento no las ejecute dos veces.
+    headers:
+      X-Clave-Idempotencia:
+        type: string
+        required: true
+        minLength: 16
+        maxLength: 128
+        description: Clave única que evita ejecutar dos veces una misma operación financiera cuando se reintenta la solicitud.
+  paginacion:
+    usage: Aplicar a consultas de colecciones que pueden devolver muchos elementos; los filtros propios de cada consulta se agregan como propiedades del queryString.
+    queryString:
+      type: Pagination
+  confirmacionFuerte:
+    usage: Aplicar a operaciones sensibles que exigen haber verificado un segundo factor inmediatamente antes de ejecutarse.
+    headers:
+      X-Factor-Confirmacion:
+        type: string
+        required: true
+        description: Token de confirmación de segundo factor emitido después de validar al usuario para esta operación sensible.
+
+resourceTypes:
+  coleccion:
+    usage: Aplicar a recursos que representan un conjunto de entidades que se pueden consultar con paginación y dar de alta.
+    get:
+      is: [ rastreable, paginacion ]
+      description: <<getDescription>>
+      responses:
+        200:
+          description: La consulta se completó y devuelve los elementos que cumplen los filtros.
+    post:
+      is: [ rastreable ]
+      description: <<postDescription>>
+      responses:
+        201:
+          description: El recurso se creó correctamente.
+        409:
+          description: Existe un conflicto con el estado actual o con una solicitud equivalente.
+          body:
+            application/json:
+              type: Error
+
+/clientes:
+  description: Expedientes de las personas que mantienen o inician una relación con el banco.
+  type:
+    coleccion:
+      getDescription: Consulta clientes visibles para el usuario autorizado, aplicando filtros y paginación.
+      postDescription: Registra un cliente nuevo y crea su expediente básico para iniciar la relación bancaria.
+  get:
+    queryString:
+      properties:
+        correo?:
+          type: string
+          description: Filtra por correo electrónico exacto para localizar un expediente de cliente.
+        estado?:
+          type: string
+          enum: [ activo, pendiente, bloqueado, cerrado ]
+          description: Filtra clientes según su estado operativo.
+    responses:
+      200:
+        body:
+          application/json:
+            type: PaginaResultado
+            properties:
+              elementos:
+                type: Cliente[]
+                description: Clientes de la página actual.
+            description: Página de clientes encontrados y clave opcional para consultar la página siguiente.
+  post:
+    body:
+      application/json:
+        type: ClienteNuevo
+        description: Datos de identidad y contacto necesarios para registrar al cliente; el banco asigna el identificador y el estado.
+    responses:
+      201:
+        body:
+          application/json:
+            type: Cliente
+            description: Expediente de cliente creado, con identificador asignado y estado inicial.
+  /{idCliente}:
+    description: Expediente individual de un cliente con sus datos de identidad y contacto.
+    uriParameters:
+      idCliente:
+        type: string
+        description: Identificador único del cliente que se desea consultar o modificar.
+    get:
+      is: [ rastreable ]
+      description: Recupera el expediente del cliente indicado, sujeto a permisos y reglas de privacidad.
+      responses:
+        200:
+          description: Expediente encontrado.
+          body:
+            application/json:
+              type: Cliente
+    patch:
+      is: [ rastreable ]
+      description: Actualiza únicamente los datos de contacto o domicilio que el cliente esté autorizado a modificar.
+      body:
+        application/json:
+          description: Datos de contacto que se desean actualizar; solo se modifican los campos enviados.
+          type: object
+          properties:
+            correo?: { type: string, description: Nuevo correo electrónico de contacto. }
+            telefono?: { type: string, description: Nuevo teléfono de contacto en formato internacional. }
+            domicilio?: { type: Domicilio, description: Nuevo domicilio principal declarado por el cliente. }
+      responses:
+        200:
+          description: Expediente actualizado.
+          body:
+            application/json:
+              type: Cliente
+    /consentimientos:
+      description: Autorizaciones que el cliente otorga o retira para el uso de sus datos personales.
+      get:
+        is: [ rastreable ]
+        description: Consulta los consentimientos vigentes que el cliente otorgó para tratamientos de datos y ofertas.
+        responses:
+          200:
+            description: Consentimientos registrados para el cliente.
+            body:
+              application/json:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    finalidad: { type: string, description: "Uso autorizado de los datos, por ejemplo mercadotecnia o consulta de buró." }
+                    otorgado: { type: boolean, description: Indica si el cliente autorizó la finalidad indicada. }
+                    fechaActualizacion: { type: datetime, description: Fecha de la última modificación del consentimiento. }
+      put:
+        is: [ rastreable ]
+        description: Registra o actualiza los consentimientos explícitos del cliente para las finalidades indicadas.
+        body:
+          application/json:
+            description: Lista completa de finalidades con la decisión del cliente para cada una.
+            type: array
+            items:
+              type: object
+              properties:
+                finalidad: { type: string, description: Finalidad concreta para la que se solicita autorización. }
+                otorgado: { type: boolean, description: true autoriza la finalidad y false retira la autorización cuando legalmente proceda. }
+        responses:
+          204:
+            description: Consentimientos actualizados.
+    /cuentas:
+      description: Cuentas bancarias de las que el cliente es titular.
+      get:
+        is: [ rastreable, paginacion ]
+        description: Lista las cuentas bancarias asociadas al cliente, sin exponer números completos.
+        responses:
+          200:
+            description: Cuentas del cliente encontradas.
+            body:
+              application/json:
+                type: PaginaResultado
+                properties:
+                  elementos:
+                    type: Cuenta[]
+                    description: Cuentas del cliente en la página actual.
+                description: Cuentas del cliente con saldos y estados visibles para el usuario autorizado.
+    /beneficiarios:
+      description: Cuentas de terceros que el cliente registra como destino frecuente de transferencias.
+      get:
+        is: [ rastreable, paginacion ]
+        description: Lista los beneficiarios registrados por el cliente para seleccionarlos al ordenar una transferencia.
+        queryString:
+          properties:
+            estado?:
+              type: string
+              enum: [ pendiente_activacion, activo, bloqueado ]
+              description: Filtra beneficiarios según su estado de activación.
+        responses:
+          200:
+            description: Beneficiarios del cliente encontrados.
+            body:
+              application/json:
+                type: PaginaResultado
+                properties:
+                  elementos:
+                    type: Beneficiario[]
+                    description: Beneficiarios de la página actual.
+                description: Página de beneficiarios registrados por el cliente.
+      post:
+        is: [ rastreable, idempotente, confirmacionFuerte ]
+        description: Registra un beneficiario nuevo; queda pendiente de activación durante el periodo de seguridad definido por el banco.
+        body:
+          application/json:
+            type: BeneficiarioNuevo
+            description: Datos de la cuenta destino, titular y límite diario del beneficiario.
+        responses:
+          201:
+            description: Beneficiario registrado en estado pendiente de activación.
+            body:
+              application/json:
+                type: Beneficiario
+          409:
+            description: El cliente ya tiene registrado un beneficiario con la misma cuenta destino.
+            body:
+              application/json:
+                type: Error
+      /{idBeneficiario}:
+        description: Beneficiario individual registrado por el cliente.
+        uriParameters:
+          idBeneficiario:
+            type: string
+            description: Identificador del beneficiario que se desea consultar, modificar o eliminar.
+        get:
+          is: [ rastreable ]
+          description: Consulta los datos y el estado de activación de un beneficiario.
+          responses:
+            200:
+              description: Beneficiario encontrado.
+              body:
+                application/json:
+                  type: Beneficiario
+        patch:
+          is: [ rastreable, confirmacionFuerte ]
+          description: Actualiza el alias, el límite diario o el correo de notificación; la cuenta destino no se puede modificar.
+          body:
+            application/json:
+              description: Datos del beneficiario que se desean actualizar; solo se modifican los campos enviados.
+              type: object
+              properties:
+                alias?:
+                  type: string
+                  maxLength: 40
+                  description: Nuevo nombre corto para identificar al beneficiario.
+                limiteDiario?:
+                  type: ImportePositivo
+                  description: Nuevo importe máximo diario permitido para transferencias al beneficiario.
+                correoNotificacion?:
+                  type: string
+                  description: Nuevo correo para avisos de transferencias al beneficiario.
+          responses:
+            200:
+              description: Beneficiario actualizado.
+              body:
+                application/json:
+                  type: Beneficiario
+        delete:
+          is: [ rastreable, confirmacionFuerte ]
+          description: Elimina al beneficiario para que ya no pueda usarse como destino de transferencias.
+          responses:
+            204:
+              description: Beneficiario eliminado.
+
+/cuentas:
+  description: Cuentas de depósito que el banco administra para sus clientes.
+  type:
+    coleccion:
+      getDescription: Consulta cuentas disponibles para el usuario autorizado y permite filtrar por titular o estado.
+      postDescription: Abre una cuenta bancaria después de validar identidad, elegibilidad y aceptación contractual.
+  get:
+    queryString:
+      properties:
+        idCliente?:
+          type: string
+          description: Identificador del titular para consultar sus cuentas.
+        estado?:
+          type: string
+          enum: [ activa, bloqueada, cancelada, pendiente ]
+          description: Estado operativo por el que se desea filtrar.
+    responses:
+      200:
+        body:
+          application/json:
+            type: PaginaResultado
+            properties:
+              elementos:
+                type: Cuenta[]
+                description: Cuentas de la página actual.
+            description: Página de cuentas que cumple los criterios de consulta.
+  post:
+    is: [ rastreable, idempotente ]
+    body:
+      application/json:
+        type: object
+        properties:
+          idCliente: { type: string, description: Identificador del cliente que será titular de la cuenta. }
+          tipo:
+            type: string
+            enum: [ debito, ahorro, nomina, corriente ]
+            description: Producto de cuenta que se desea contratar.
+          moneda:
+            type: string
+            pattern: "^[A-Z]{3}$"
+            description: Moneda base de la cuenta conforme a ISO 4217.
+        description: Datos de apertura de cuenta y producto seleccionado.
+    responses:
+      201:
+        body:
+          application/json:
+            type: Cuenta
+            description: Cuenta creada con identificador y estado inicial.
+  /{idCuenta}:
+    description: Cuenta bancaria individual con su saldo y estado operativo.
+    uriParameters:
+      idCuenta:
+        type: string
+        description: Identificador de la cuenta que se desea consultar o administrar.
+    get:
+      is: [ rastreable ]
+      description: Consulta los datos operativos de una cuenta y su saldo disponible.
+      responses:
+        200:
+          description: Cuenta encontrada y visible para el solicitante.
+          body:
+            application/json:
+              type: Cuenta
+              description: Datos de la cuenta autorizados para el solicitante.
+    patch:
+      is: [ rastreable ]
+      description: Solicita bloquear o desbloquear una cuenta de acuerdo con los permisos y controles de seguridad.
+      body:
+        application/json:
+          description: Nuevo estado operativo solicitado y su justificación.
+          type: object
+          properties:
+            estado:
+              type: string
+              enum: [ activa, bloqueada ]
+              description: Estado operativo solicitado para la cuenta.
+            motivo:
+              type: string
+              description: Motivo de negocio que justifica el cambio de estado.
+      responses:
+        200:
+          description: Estado de cuenta actualizado.
+          body:
+            application/json:
+              type: Cuenta
+    /movimientos:
+      description: Historial contable de la cuenta que permite al cliente conciliar cargos y abonos.
+      get:
+        is: [ rastreable, paginacion ]
+        description: Consulta el historial de cargos, abonos, retenciones y liberaciones de la cuenta.
+        queryString:
+          properties:
+            desde?:
+              type: date-only
+              description: Incluye movimientos registrados a partir de esta fecha.
+            hasta?:
+              type: date-only
+              description: Incluye movimientos registrados hasta esta fecha.
+            tipo?:
+              type: string
+              enum: [ abono, cargo, retencion, liberacion ]
+              description: Limita los resultados a una clase de movimiento.
+        responses:
+          200:
+            description: Movimientos encontrados para el periodo solicitado.
+            body:
+              application/json:
+                type: PaginaResultado
+                properties:
+                  elementos:
+                    type: Movimiento[]
+                    description: Movimientos de la cuenta en la página actual.
+                description: Movimientos de la cuenta para el periodo solicitado.
+    /estado-cuenta:
+      description: Generación del estado de cuenta oficial de un periodo.
+      post:
+        is: [ rastreable ]
+        description: Solicita generar un estado de cuenta para un periodo específico.
+        body:
+          application/json:
+            description: Periodo y formato del estado de cuenta solicitado.
+            type: object
+            properties:
+              periodoDesde: { type: date-only, description: Primer día del periodo del estado de cuenta. }
+              periodoHasta: { type: date-only, description: Último día del periodo del estado de cuenta. }
+              formato:
+                type: string
+                enum: [ pdf ]
+                description: Formato del archivo de estado de cuenta solicitado.
+        responses:
+          202:
+            description: La solicitud fue aceptada; el documento se generará de forma asíncrona.
+            body:
+              application/json:
+                type: Documento
+
+/prestamos:
+  description: Solicitudes y contratos de crédito personal del banco.
+  post:
+    is: [ rastreable, idempotente ]
+    description: Registra una solicitud de préstamo personal para evaluación de capacidad de pago y riesgo crediticio.
+    body:
+      application/json:
+        type: SolicitudPrestamo
+        description: Datos financieros y condiciones solicitadas para iniciar la evaluación.
+    responses:
+      202:
+        description: Solicitud recibida y enviada al flujo de evaluación crediticia.
+        body:
+          application/json:
+            type: object
+            properties:
+              idPrestamo: { type: string, description: Identificador de la solicitud de préstamo. }
+              estado:
+                type: EstadoPrestamo
+                enum: [ recibido, en_evaluacion ]
+                description: Estado inicial de la solicitud.
+              fechaRecepcion: { type: datetime, description: Fecha y hora de recepción de la solicitud. }
+  get:
+    is: [ rastreable, paginacion ]
+    description: Consulta préstamos y solicitudes visibles para el cliente autorizado.
+    queryString:
+      properties:
+        idCliente:
+          type: string
+          required: true
+          description: Identificador del cliente cuyos préstamos se desean consultar.
+        estado?:
+          type: EstadoPrestamo
+          description: Estado de negocio por el que se desea filtrar.
+    responses:
+      200:
+        description: Préstamos y solicitudes encontrados para el cliente.
+        body:
+          application/json:
+            type: PaginaResultado
+            properties:
+              elementos:
+                type: Prestamo[]
+                description: Préstamos y solicitudes de la página actual.
+            description: Página de solicitudes y contratos de préstamo del cliente.
+  /{idPrestamo}:
+    description: Solicitud o contrato de préstamo individual con sus condiciones y saldo.
+    uriParameters:
+      idPrestamo:
+        type: string
+        description: Identificador de la solicitud o contrato de préstamo.
+    get:
+      is: [ rastreable ]
+      description: Consulta el estado, las condiciones aprobadas y el saldo pendiente de un préstamo.
+      responses:
+        200:
+          description: Préstamo encontrado.
+          body:
+            application/json:
+              type: Prestamo
+    /amortizacion:
+      description: Calendario de mensualidades que el acreditado debe cubrir para liquidar el préstamo.
+      get:
+        is: [ rastreable, paginacion ]
+        description: Consulta las mensualidades previstas, su vencimiento y la distribución entre capital, intereses y cargos.
+        responses:
+          200:
+            description: Tabla de amortización del préstamo.
+            body:
+              application/json:
+                type: PaginaResultado
+                properties:
+                  elementos:
+                    description: Mensualidades de la página actual en orden de vencimiento.
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        numeroPago: { type: integer, description: Número consecutivo de la mensualidad. }
+                        fechaVencimiento: { type: date-only, description: Fecha límite para pagar la mensualidad. }
+                        capital: { type: Dinero, description: Parte de la mensualidad que reduce el capital. }
+                        intereses: { type: Dinero, description: Parte de la mensualidad correspondiente a intereses. }
+                        total: { type: Dinero, description: Importe total previsto para la mensualidad. }
+                        estado: { type: string, enum: [ pendiente, pagado, vencido ], description: Estado del pago programado. }
+                description: Página de la tabla de amortización del préstamo.
+    /pagos:
+      description: Abonos que el acreditado realiza para cubrir mensualidades, adelantar capital o liquidar el préstamo.
+      post:
+        is: [ rastreable, idempotente, confirmacionFuerte ]
+        description: Registra un pago extraordinario o una mensualidad del préstamo y aplica el importe conforme al contrato.
+        body:
+          application/json:
+            description: Cuenta de cargo, importe y forma de aplicación del abono.
+            type: object
+            properties:
+              idCuentaCargo: { type: string, description: Cuenta de la que se tomará el dinero para pagar el préstamo. }
+              importe: { type: ImportePositivo, description: Importe que el cliente desea abonar al préstamo. }
+              tipoAbono:
+                type: string
+                enum: [ mensualidad, anticipado, liquidacion ]
+                description: Forma en que se aplicará el pago al contrato.
+        responses:
+          202:
+            description: Pago recibido para validación y aplicación al préstamo.
+            body:
+              application/json:
+                type: object
+                properties:
+                  idPago: { type: string, description: Identificador del pago recibido. }
+                  estado: { type: EstadoPago, description: Estado inicial del procesamiento del pago. }
+
+/transferencias:
+  description: Órdenes para mover dinero entre cuentas del banco o hacia otros bancos.
+  post:
+    is: [ rastreable, idempotente, confirmacionFuerte ]
+    description: Ordena una transferencia entre cuentas propias o hacia otro banco, sujeta a saldo, límites y controles antifraude.
+    body:
+      application/json:
+        type: Transferencia
+        description: Cuenta de origen, beneficiario, importe y referencias para ejecutar la transferencia.
+    responses:
+      202:
+        description: La orden fue aceptada para procesamiento; la aceptación no garantiza liquidación final.
+        body:
+          application/json:
+            type: object
+            properties:
+              idTransferencia: { type: string, description: Identificador para consultar el resultado de la transferencia. }
+              estado:
+                type: EstadoTransferencia
+                enum: [ recibida, en_validacion, programada ]
+                description: Estado inicial asignado a la orden.
+              fechaRecepcion: { type: datetime, description: Fecha y hora de recepción de la orden. }
+  get:
+    is: [ rastreable, paginacion ]
+    description: Consulta transferencias del cliente para seguimiento y conciliación.
+    queryString:
+      properties:
+        idCuenta?:
+          type: string
+          description: Limita la consulta a transferencias relacionadas con una cuenta específica.
+        desde?:
+          type: date-only
+          description: Fecha inicial del periodo que se desea consultar.
+        hasta?:
+          type: date-only
+          description: Fecha final del periodo que se desea consultar.
+        estado?:
+          type: EstadoTransferencia
+          description: Estado de procesamiento por el que se desea filtrar.
+    responses:
+      200:
+        description: Transferencias encontradas.
+        body:
+          application/json:
+            type: PaginaResultado
+            properties:
+              elementos:
+                description: Transferencias de la página actual.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    idTransferencia: { type: string, description: Identificador único de la transferencia. }
+                    importe: { type: Dinero, description: Importe ordenado para transferencia. }
+                    estado: { type: EstadoTransferencia, description: Estado actual de la orden. }
+                    fechaHora: { type: datetime, description: Fecha y hora del último cambio de estado. }
+            description: Transferencias que cumplen los filtros solicitados.
+  /{idTransferencia}:
+    description: Orden de transferencia individual y su resultado de procesamiento.
+    uriParameters:
+      idTransferencia:
+        type: string
+        description: Identificador de la transferencia que se desea consultar.
+    get:
+      is: [ rastreable ]
+      description: Consulta el estado, los datos principales y el resultado de una transferencia.
+      responses:
+        200:
+          description: Transferencia encontrada.
+          body:
+            application/json:
+              type: object
+              properties:
+                idTransferencia: { type: string, description: Identificador único de la transferencia. }
+                importe: { type: Dinero, description: Importe transferido o solicitado. }
+                estado: { type: EstadoTransferencia, description: Estado vigente de la transferencia. }
+                motivoRechazo?: { type: string, description: Explicación de negocio cuando la transferencia fue rechazada. }
+                fechaLiquidacion?: { type: datetime, description: Fecha y hora en que se confirmó la liquidación. }
+    /cancelacion:
+      description: Solicitud para detener una transferencia antes de su liquidación.
+      post:
+        is: [ rastreable, idempotente, confirmacionFuerte ]
+        description: Solicita cancelar una transferencia solo si su estado y las reglas del sistema de pagos permiten detenerla.
+        body:
+          application/json:
+            description: Justificación de la solicitud de cancelación.
+            type: object
+            properties:
+              motivo: { type: string, description: Motivo por el que el cliente solicita cancelar la transferencia. }
+        responses:
+          202:
+            description: Solicitud de cancelación recibida para validación.
+          409:
+            description: La transferencia ya fue liquidada o no admite cancelación.
+            body:
+              application/json:
+                type: Error
+    /comprobante:
+      description: Generación del comprobante oficial que acredita la transferencia.
+      post:
+        is: [ rastreable ]
+        description: Solicita generar un comprobante de la transferencia para descarga posterior.
+        body:
+          application/json:
+            description: Formato requerido para el comprobante.
+            type: object
+            properties:
+              formato:
+                type: string
+                enum: [ pdf ]
+                description: Formato requerido para el comprobante.
+        responses:
+          202:
+            description: Solicitud de generación recibida.
+            body:
+              application/json:
+                type: Documento
+
+/pagos:
+  description: Pagos de servicios y convenios comerciales realizados con cargo a una cuenta.
+  post:
+    is: [ rastreable, idempotente, confirmacionFuerte ]
+    description: Ejecuta el pago de un servicio o convenio desde una cuenta autorizada, sujeto a validación de referencia e importe.
+    body:
+      application/json:
+        type: Pago
+        description: Datos de la cuenta de cargo, convenio, referencia e importe del pago.
+    responses:
+      202:
+        description: Pago recibido para validación y procesamiento con el proveedor.
+        body:
+          application/json:
+            type: object
+            properties:
+              idPago: { type: string, description: Identificador del pago para seguimiento. }
+              estado:
+                type: EstadoPago
+                enum: [ recibido, en_validacion, enviado ]
+                description: Estado inicial del pago.
+  get:
+    is: [ rastreable, paginacion ]
+    description: Consulta pagos realizados o pendientes por el cliente autorizado.
+    queryString:
+      properties:
+        idCuentaCargo?:
+          type: string
+          description: Cuenta desde la que se originó el pago.
+        estado?:
+          type: EstadoPago
+          description: Estado del pago por el que se desea filtrar.
+        desde?:
+          type: date-only
+          description: Fecha inicial del periodo de consulta.
+        hasta?:
+          type: date-only
+          description: Fecha final del periodo de consulta.
+    responses:
+      200:
+        description: Pagos encontrados.
+        body:
+          application/json:
+            type: PaginaResultado
+            properties:
+              elementos:
+                description: Pagos de la página actual.
+                type: PagoRegistrado[]
+            description: Página de pagos que cumplen los filtros.
+  /convenios:
+    description: Catálogo de proveedores y servicios que el banco permite pagar.
+    get:
+      is: [ rastreable, paginacion ]
+      description: Consulta los proveedores y convenios de pago habilitados para el banco.
+      queryString:
+        properties:
+          categoria?:
+            type: string
+            description: Categoría de servicio, por ejemplo electricidad, agua, telecomunicaciones o impuestos.
+          texto?:
+            type: string
+            description: Texto para buscar por nombre del proveedor o descripción del convenio.
+      responses:
+        200:
+          description: Convenios de pago encontrados.
+          body:
+            application/json:
+              type: PaginaResultado
+              properties:
+                elementos:
+                  description: Convenios de la página actual.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      idConvenio: { type: string, description: Identificador del convenio utilizado al registrar un pago. }
+                      nombre: { type: string, description: Nombre comercial del proveedor de servicio. }
+                      categoria: { type: string, description: Categoría del servicio que se puede pagar. }
+                      requiereReferencia: { type: boolean, description: Indica si el proveedor exige una referencia para identificar la deuda. }
+                      permiteMontoLibre: { type: boolean, description: Indica si el usuario puede capturar el importe o si el proveedor lo determina. }
+              description: Convenios de pago disponibles según los criterios de búsqueda.
+    /{idConvenio}:
+      description: Convenio de pago individual con sus reglas de captura y validación.
+      uriParameters:
+        idConvenio:
+          type: string
+          description: Identificador del convenio de pago que se desea consultar.
+      get:
+        is: [ rastreable ]
+        description: Consulta las reglas de captura y validación que aplica un convenio específico.
+        responses:
+          200:
+            description: Convenio de pago encontrado.
+            body:
+              application/json:
+                type: object
+                properties:
+                  idConvenio: { type: string, description: Identificador del convenio. }
+                  nombre: { type: string, description: Nombre comercial del proveedor. }
+                  instrucciones: { type: string, description: Indicaciones para localizar la referencia de pago. }
+                  formatoReferencia?: { type: string, description: Regla o patrón esperado para la referencia del proveedor. }
+                  importeMinimo?: { type: Dinero, description: Importe mínimo permitido por el convenio. }
+                  importeMaximo?: { type: Dinero, description: Importe máximo permitido por el convenio. }
+  /{idPago}:
+    description: Pago de servicio individual y su resultado de procesamiento con el proveedor.
+    uriParameters:
+      idPago:
+        type: string
+        description: Identificador del pago que se desea consultar.
+    get:
+      is: [ rastreable ]
+      description: Consulta el estado, el folio del proveedor y los datos principales de un pago para seguimiento o aclaraciones.
+      responses:
+        200:
+          description: Pago encontrado.
+          body:
+            application/json:
+              type: PagoRegistrado
+
+/hipotecas:
+  description: Solicitudes y contratos de crédito hipotecario del banco.
+  post:
+    is: [ rastreable, idempotente ]
+    description: Registra una solicitud de crédito hipotecario para evaluar al solicitante, el inmueble y la garantía.
+    body:
+      application/json:
+        type: SolicitudHipoteca
+        description: Datos del solicitante, valor del inmueble, importe requerido y plazo propuesto.
+    responses:
+      202:
+        description: Solicitud hipotecaria recibida y enviada a evaluación.
+        body:
+          application/json:
+            type: object
+            properties:
+              idHipoteca: { type: string, description: Identificador de la solicitud hipotecaria. }
+              estado:
+                type: EstadoHipoteca
+                enum: [ recibida, en_evaluacion ]
+                description: Estado inicial del expediente hipotecario.
+  get:
+    is: [ rastreable, paginacion ]
+    description: Consulta solicitudes y contratos hipotecarios de un cliente.
+    queryString:
+      properties:
+        idCliente:
+          type: string
+          required: true
+          description: Identificador del solicitante o acreditado.
+        estado?:
+          type: EstadoHipoteca
+          description: Estado del expediente hipotecario por el que se desea filtrar.
+    responses:
+      200:
+        description: Expedientes hipotecarios encontrados.
+        body:
+          application/json:
+            type: PaginaResultado
+            properties:
+              elementos:
+                type: Hipoteca[]
+                description: Expedientes hipotecarios de la página actual.
+            description: Página de solicitudes y contratos hipotecarios del cliente.
+  /{idHipoteca}:
+    description: Expediente hipotecario individual con su avance de evaluación y condiciones.
+    uriParameters:
+      idHipoteca:
+        type: string
+        description: Identificador de la solicitud o contrato hipotecario.
+    get:
+      is: [ rastreable ]
+      description: Consulta condiciones, avance de evaluación y datos principales del expediente hipotecario.
+      responses:
+        200:
+          description: Expediente hipotecario encontrado.
+          body:
+            application/json:
+              type: Hipoteca
+    /documentos:
+      description: Documentación que el solicitante entrega para evaluar y formalizar la hipoteca.
+      get:
+        is: [ rastreable ]
+        description: Lista los documentos requeridos o entregados para evaluar y formalizar la hipoteca.
+        responses:
+          200:
+            description: Documentos requeridos y entregados del expediente hipotecario.
+            body:
+              application/json:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tipo: { type: string, description: "Tipo de documento requerido, por ejemplo identificación, avalúo o comprobante de ingresos." }
+                    estado:
+                      type: string
+                      enum: [ pendiente, recibido, validado, rechazado ]
+                      description: Estado de revisión del documento.
+                    obligatorio: { type: boolean, description: Indica si el documento es indispensable para continuar el trámite. }
+      post:
+        is: [ rastreable, idempotente ]
+        description: Registra la referencia segura de un documento aportado al expediente hipotecario.
+        body:
+          application/json:
+            description: Tipo documental e identificador del archivo almacenado de forma segura.
+            type: object
+            properties:
+              tipo: { type: string, description: Tipo documental que se incorpora al expediente. }
+              idDocumento: { type: string, description: Identificador del documento almacenado en el servicio documental seguro. }
+        responses:
+          202:
+            description: Referencia documental recibida para revisión.
+
+/seguros:
+  description: Pólizas y cotizaciones de seguros que el banco ofrece a sus clientes.
+  get:
+    is: [ rastreable, paginacion ]
+    description: Consulta pólizas y cotizaciones de seguros asociadas a un cliente.
+    queryString:
+      properties:
+        idCliente:
+          type: string
+          required: true
+          description: Identificador del cliente titular, contratante o asegurado.
+        estado?:
+          type: string
+          enum: [ cotizado, vigente, vencido, cancelado ]
+          description: Estado de la póliza por el que se desea filtrar.
+    responses:
+      200:
+        description: Pólizas y cotizaciones encontradas.
+        body:
+          application/json:
+            type: PaginaResultado
+            properties:
+              elementos:
+                type: Seguro[]
+                description: Pólizas y cotizaciones de la página actual.
+            description: Pólizas y cotizaciones del cliente que cumplen los filtros.
+  post:
+    is: [ rastreable, idempotente ]
+    description: Genera una cotización de seguro para el cliente según el tipo de protección y sus datos de elegibilidad.
+    body:
+      application/json:
+        type: object
+        properties:
+          idCliente: { type: string, description: Identificador del cliente que solicita la cotización. }
+          tipo:
+            type: string
+            enum: [ vida, hogar, auto, desempleo, proteccion_pagos ]
+            description: Tipo de cobertura que el cliente desea cotizar.
+          sumaAsegurada: { type: ImportePositivo, description: "Importe máximo de cobertura solicitado, sujeto a las reglas del producto." }
+          periodicidad:
+            type: string
+            enum: [ mensual, trimestral, semestral, anual ]
+            description: Frecuencia de pago de prima que se desea cotizar.
+        description: Datos mínimos para calcular una propuesta de seguro.
+    responses:
+      201:
+        description: Cotización creada; la prima final depende de la evaluación y condiciones del producto.
+        body:
+          application/json:
+            type: Seguro
+  /{idSeguro}:
+    description: Póliza o cotización de seguro individual.
+    uriParameters:
+      idSeguro:
+        type: string
+        description: Identificador de la póliza o cotización de seguro.
+    get:
+      is: [ rastreable ]
+      description: Consulta cobertura, prima, periodicidad y estado de una póliza o cotización.
+      responses:
+        200:
+          description: Póliza o cotización encontrada.
+          body:
+            application/json:
+              type: Seguro
+    /contratacion:
+      description: Aceptación de una cotización para emitir la póliza.
+      post:
+        is: [ rastreable, idempotente, confirmacionFuerte ]
+        description: Acepta una cotización y solicita emitir la póliza después de validar condiciones y consentimiento del cliente.
+        body:
+          application/json:
+            description: Aceptación de condiciones y cuenta para el cobro de la prima.
+            type: object
+            properties:
+              aceptaCondiciones: { type: boolean, enum: [ true ], description: Confirmación expresa de que el cliente acepta las condiciones de la póliza. }
+              cuentaCargo?: { type: string, description: "Cuenta autorizada para cobrar la prima, cuando el producto lo requiera." }
+        responses:
+          202:
+            description: Solicitud de contratación recibida para emisión de la póliza.
+            body:
+              application/json:
+                type: object
+                properties:
+                  idSeguro: { type: string, description: Identificador de la póliza o proceso de emisión. }
+                  estado: { type: string, enum: [ en_emision, emitida, rechazada ], description: Estado del proceso de contratación. }
+    /cancelacion:
+      description: Solicitud del cliente para dar por terminada una póliza vigente.
+      post:
+        is: [ rastreable, idempotente, confirmacionFuerte ]
+        description: Solicita cancelar una póliza vigente; el banco calcula la fecha efectiva y, cuando aplica, la prima no devengada que se reembolsará.
+        body:
+          application/json:
+            description: Motivo y fecha deseada para la cancelación de la póliza.
+            type: object
+            properties:
+              motivo:
+                type: string
+                enum: [ solicitud_cliente, cambio_aseguradora, venta_bien_asegurado, otro ]
+                description: Razón de negocio por la que el cliente solicita la cancelación.
+              comentario?:
+                type: string
+                maxLength: 500
+                description: Detalle adicional que el cliente desea registrar sobre la cancelación.
+              fechaEfectivaSolicitada?:
+                type: date-only
+                description: Fecha a partir de la cual el cliente desea terminar la cobertura; si se omite, se aplica la fecha más próxima permitida por el contrato.
+        responses:
+          202:
+            description: Solicitud de cancelación recibida para validación.
+            body:
+              application/json:
+                type: object
+                properties:
+                  idSeguro:
+                    type: string
+                    description: Identificador de la póliza que se cancelará.
+                  estadoSolicitud:
+                    type: string
+                    enum: [ recibida, aplicada ]
+                    description: Estado de la solicitud de cancelación.
+                  fechaEfectiva:
+                    type: date-only
+                    description: Fecha en que termina la cobertura de la póliza.
+                  reembolso?:
+                    type: Dinero
+                    description: Prima no devengada que se devolverá al cliente, cuando el contrato lo prevé.
+          409:
+            description: La póliza no está vigente o el contrato no permite cancelarla en este momento.
+            body:
+              application/json:
+                type: Error
+    /documento:
+      description: Generación de la carátula o certificado de la póliza.
+      post:
+        is: [ rastreable ]
+        description: Solicita generar la carátula o certificado de la póliza para consulta del asegurado.
+        body:
+          application/json:
+            description: Formato requerido para el documento de la póliza.
+            type: object
+            properties:
+              formato:
+                type: string
+                enum: [ pdf ]
+                description: Formato requerido para el documento de póliza.
+        responses:
+          202:
+            description: Solicitud documental aceptada.
+            body:
+              application/json:
+                type: Documento
+
+/autenticacion:
+  description: Servicio técnico para iniciar sesión, verificar un segundo factor y renovar o cerrar sesiones.
+  /sesiones:
+    description: Sesiones de acceso que el usuario inicia al validar sus credenciales.
+    post:
+      is: [ rastreable ]
+      securedBy: [ null ]
+      description: Valida las credenciales del usuario e inicia una sesión con permisos acordes a su identidad y perfil.
+      headers:
+        X-Canal:
+          type: string
+          required: true
+          enum: [ web, movil, sucursal, servicio ]
+          description: Canal desde el que se inicia la sesión para aplicar controles de riesgo y experiencia adecuados.
+        X-Id-Dispositivo?:
+          type: string
+          description: Identificador registrado del dispositivo para detectar accesos desconocidos o riesgosos.
+      body:
+        application/json:
+          type: object
+          properties:
+            usuario: { type: string, description: Nombre de usuario o identificador de acceso registrado. }
+            secreto: { type: string, description: Contraseña o secreto de autenticación; debe transmitirse solo por HTTPS y nunca registrarse en bitácoras. }
+          description: Credenciales de acceso del usuario.
+      responses:
+        201:
+          description: Sesión iniciada y tokens emitidos.
+          body:
+            application/json:
+              type: object
+              properties:
+                tokenAcceso: { type: string, description: Token de corta duración que se enviará como Bearer en las llamadas protegidas. }
+                tipoToken: { type: string, enum: [ Bearer ], description: Esquema de autorización que debe acompañar al token de acceso. }
+                expiraEnSegundos: { type: integer, description: Segundos de vigencia del token de acceso. }
+                tokenRenovacion: { type: string, description: Token de larga duración que permite obtener un nuevo token de acceso sin volver a enviar credenciales. }
+                idSesion: { type: string, description: Identificador de la sesión para revocación y auditoría. }
+        401:
+          description: Las credenciales no son válidas o el acceso requiere validaciones adicionales.
+          body:
+            application/json:
+              type: Error
+    /{idSesion}:
+      description: Sesión de acceso individual que puede revocarse.
+      uriParameters:
+        idSesion:
+          type: string
+          description: Identificador de la sesión que se desea consultar o cerrar.
+      delete:
+        is: [ rastreable ]
+        description: Revoca la sesión indicada para impedir que sus tokens sigan utilizándose conforme a la política de revocación.
+        responses:
+          204:
+            description: Sesión revocada correctamente.
+  /renovacion:
+    description: Renovación del token de acceso sin volver a solicitar credenciales.
+    post:
+      is: [ rastreable ]
+      securedBy: [ null ]
+      description: Emite un nuevo token de acceso a partir de un token de renovación válido y no revocado.
+      body:
+        application/json:
+          description: Token de renovación de la sesión vigente.
+          type: object
+          properties:
+            tokenRenovacion: { type: string, description: Token de renovación asociado a la sesión vigente. }
+      responses:
+        200:
+          description: Token de acceso renovado.
+          body:
+            application/json:
+              type: object
+              properties:
+                tokenAcceso: { type: string, description: Nuevo token de acceso de corta duración. }
+                expiraEnSegundos: { type: integer, description: Tiempo de vida del nuevo token en segundos. }
+  /verificacion-segundo-factor:
+    description: Validación del código de un solo uso que refuerza la identidad del usuario.
+    post:
+      is: [ rastreable ]
+      securedBy: [ null ]
+      description: Verifica un código de un solo uso para reforzar la autenticación antes de permitir operaciones sensibles.
+      body:
+        application/json:
+          description: Sesión y código de un solo uso que se desean verificar.
+          type: object
+          properties:
+            idSesion: { type: string, description: Sesión a la que se vincula el segundo factor. }
+            codigo: { type: string, description: Código temporal recibido por el método de verificación registrado. }
+      responses:
+        200:
+          description: Segundo factor validado.
+          body:
+            application/json:
+              type: object
+              properties:
+                tokenConfirmacion: { type: string, description: Token de corta duración que confirma la verificación para operaciones sensibles. }
+                expiraEnSegundos: { type: integer, description: Vigencia del token de confirmación. }
+        401:
+          description: El código no es válido, expiró o superó el número de intentos permitidos.
+          body:
+            application/json:
+              type: Error
+  /introspeccion:
+    description: Consulta técnica de la validez y los permisos de un token de acceso.
+    post:
+      is: [ rastreable ]
+      description: Valida un token de acceso y devuelve sus permisos y vigencia sin revelar credenciales.
+      body:
+        application/json:
+          description: Token de acceso que se desea validar.
+          type: object
+          properties:
+            tokenAcceso: { type: string, description: Token que se desea validar para una integración autorizada. }
+      responses:
+        200:
+          description: Resultado de la validación del token.
+          body:
+            application/json:
+              type: object
+              properties:
+                valido: { type: boolean, description: Indica si el token puede utilizarse en este momento. }
+                sujeto: { type: string, description: Identificador del usuario o aplicación a la que pertenece el token. }
+                permisos: { type: "string[]", description: Lista de permisos concedidos al token. }
+                expiraEn: { type: datetime, description: Fecha y hora de expiración del token. }
+
+/criptografia:
+  description: Capacidades técnicas controladas para cifrar y descifrar datos de negocio mediante claves administradas por el banco.
+  /cifrados:
+    description: Protección de datos sensibles mediante cifrado con claves administradas por el banco.
+    post:
+      is: [ rastreable ]
+      description: Cifra un dato sensible para almacenarlo o enviarlo de forma protegida; el servicio administra las claves y su rotación.
+      body:
+        application/json:
+          description: Dato sensible, clave y propósito del cifrado.
+          type: object
+          properties:
+            dato:
+              type: string
+              description: Texto sensible que se desea cifrar; debe enviarse solo por un canal protegido y no registrarse en bitácoras.
+            idClave?:
+              type: string
+              description: Identificador lógico de la clave autorizada; si se omite, se aplica la clave vigente según la política del banco.
+            contexto?:
+              type: string
+              description: Propósito del cifrado para aplicar controles de uso y auditoría.
+      responses:
+        200:
+          description: Dato cifrado correctamente.
+          body:
+            application/json:
+              type: object
+              properties:
+                datoCifrado: { type: string, description: Texto cifrado codificado para transportarse en JSON. }
+                idClave: { type: string, description: Identificador no secreto de la clave utilizada. }
+                algoritmo: { type: string, description: Algoritmo o perfil criptográfico aplicado por el servicio. }
+  /descifrados:
+    description: Recuperación controlada y auditada del valor original de un dato cifrado.
+    post:
+      is: [ rastreable ]
+      description: Descifra un dato solo cuando la identidad y el propósito de uso están autorizados; cada acceso queda auditado.
+      body:
+        application/json:
+          description: Dato cifrado, clave y justificación del acceso.
+          type: object
+          properties:
+            datoCifrado: { type: string, description: Texto cifrado que se solicita recuperar. }
+            idClave: { type: string, description: Identificador lógico de la clave requerida para descifrar el dato. }
+            motivo: { type: string, description: Justificación de negocio para acceder al valor original. }
+      responses:
+        200:
+          description: Dato descifrado para un consumidor autorizado.
+          body:
+            application/json:
+              type: object
+              properties:
+                dato: { type: string, description: Valor original recuperado; el consumidor debe evitar almacenarlo o registrarlo innecesariamente. }
+        403:
+          description: El consumidor no tiene autorización para recuperar el dato original.
+          body:
+            application/json:
+              type: Error
+  /huellas:
+    description: Cálculo de huellas criptográficas para verificar integridad o detectar duplicados.
+    post:
+      is: [ rastreable ]
+      description: Genera una huella criptográfica no reversible para verificar integridad o comparar valores sin almacenar el dato original.
+      body:
+        application/json:
+          description: Dato de entrada y propósito de la huella.
+          type: object
+          properties:
+            dato: { type: string, description: Valor de entrada del que se calculará la huella; no se devuelve el dato original. }
+            proposito: { type: string, description: "Uso de la huella, por ejemplo verificación de integridad o detección de duplicados." }
+      responses:
+        200:
+          description: Huella calculada.
+          body:
+            application/json:
+              type: object
+              properties:
+                huella: { type: string, description: "Resultado de la función criptográfica, codificado para transportarse en JSON." }
+                algoritmo: { type: string, description: Algoritmo de huella aprobado por la política criptográfica del banco. }
+
+/documentos:
+  description: Documentos bancarios generados a partir de plantillas, como estados de cuenta, contratos o comprobantes.
+  post:
+    is: [ rastreable ]
+    description: Solicita la generación asíncrona de un documento bancario a partir de una plantilla y datos autorizados.
+    body:
+      application/json:
+        type: object
+        properties:
+          tipo:
+            type: string
+            enum: [ estado_cuenta, comprobante, contrato, caratula, carta_saldo ]
+            description: Tipo de documento que se requiere generar.
+          referenciaNegocio:
+            type: string
+            description: Identificador del recurso de negocio que aporta los datos, por ejemplo una cuenta, transferencia o póliza.
+          parametros?:
+            type: object
+            description: Parámetros específicos de la plantilla, como periodo, idioma o sucursal, sin incluir secretos.
+            properties:
+              desde?: { type: date-only, description: Fecha inicial del periodo cuando el documento depende de un rango. }
+              hasta?: { type: date-only, description: Fecha final del periodo cuando el documento depende de un rango. }
+              idioma?: { type: string, description: "Idioma solicitado para el documento, por ejemplo es-MX." }
+          formato:
+            type: string
+            enum: [ pdf ]
+            description: Formato de salida del documento generado.
+        description: Tipo, referencia de negocio, formato y parámetros necesarios para generar el documento.
+    responses:
+      202:
+        description: Solicitud aceptada; el documento se procesa en segundo plano.
+        body:
+          application/json:
+            type: Documento
+  get:
+    is: [ rastreable, paginacion ]
+    description: Consulta documentos generados para el usuario autorizado.
+    queryString:
+      properties:
+        referenciaNegocio?:
+          type: string
+          description: Identificador de la cuenta, transferencia, préstamo, hipoteca o póliza relacionada.
+        tipo?:
+          type: string
+          enum: [ estado_cuenta, comprobante, contrato, caratula, carta_saldo ]
+          description: Limita la búsqueda a un tipo de documento.
+        estado?:
+          type: string
+          enum: [ solicitado, procesando, disponible, fallido, expirado ]
+          description: Limita la búsqueda al estado de generación o disponibilidad.
+    responses:
+      200:
+        description: Documentos encontrados.
+        body:
+          application/json:
+            type: PaginaResultado
+            properties:
+              elementos:
+                type: Documento[]
+                description: Documentos de la página actual.
+            description: Documentos que cumplen los criterios de búsqueda y clave opcional para consultar la página siguiente.
+  /{idDocumento}:
+    description: Documento individual con su estado de generación y metadatos.
+    uriParameters:
+      idDocumento:
+        type: string
+        description: Identificador único del documento solicitado o generado.
+    get:
+      is: [ rastreable ]
+      description: Consulta el estado de generación y los metadatos del documento.
+      responses:
+        200:
+          description: Documento encontrado.
+          body:
+            application/json:
+              type: Documento
+    /descarga:
+      description: Entrega del enlace temporal para descargar un documento disponible.
+      get:
+        is: [ rastreable ]
+        description: Obtiene una dirección temporal de descarga si el documento está disponible y el usuario tiene permiso para consultarlo.
+        responses:
+          200:
+            description: Enlace de descarga temporal emitido.
+            body:
+              application/json:
+                type: object
+                properties:
+                  urlDescarga: { type: string, description: URL temporal firmada para descargar el archivo sin exponer el repositorio interno. }
+                  expiraEn: { type: datetime, description: Fecha y hora a partir de la cual el enlace deja de ser válido. }
+          409:
+            description: El documento todavía se está generando, falló o ya expiró.
+            body:
+              application/json:
+                type: Error
+    /regeneracion:
+      description: Nueva generación de un documento fallido o expirado.
+      post:
+        is: [ rastreable ]
+        description: Solicita regenerar un documento cuando la versión anterior falló o ya no está disponible.
+        responses:
+          202:
+            description: Regeneración aceptada para procesamiento.
+            body:
+              application/json:
+                type: Documento
+
