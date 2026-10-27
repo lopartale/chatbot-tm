@@ -5,8 +5,9 @@ Las pruebas se refieren a los servicios por "MÉTODO /endpoint" y no por su ID,
 porque los IDs (SRV-001, SRV-002...) se asignan según el orden del RAML y cambian
 si se agregan o se reordenan recursos.
 
-    python pruebas_conversaciones.py   # reporte completo; guarda evidencias/
-    python -m pytest                   # falla si algún turno no cumple lo esperado
+Se ejecutan con test_chatbot.py, que además guarda el reporte completo en evidencias/:
+
+    python -m pytest test_chatbot.py
 """
 import json
 import re

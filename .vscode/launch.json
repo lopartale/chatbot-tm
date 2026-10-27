@@ -13,7 +13,8 @@
       "name": "Pruebas de conversaciones",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/pruebas_conversaciones.py",
+      "module": "pytest",
+      "args": ["test_chatbot.py"],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
     }
