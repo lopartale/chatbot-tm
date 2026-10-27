@@ -48,12 +48,11 @@ chatbot-tm/
 ├── clasificador_intenciones.py            # 2. Clasificador de intenciones
 ├── gestor_respuestas.py                   # 3. Gestor de respuestas
 ├── inventario_raml.py                     # Base de conocimiento: lector RAML -> inventario de servicios
-├── pruebas_conversaciones.py              # Conversaciones de prueba + prueba de generalización
-├── test_chatbot.py                        # Las mismas conversaciones como pruebas de pytest
-├── test_componentes.py                    # Pruebas unitarias de cada nodo del flujo y del modo interactivo
-├── test_inventario_raml.py                # Pruebas unitarias del lector RAML (con un RAML mínimo)
+├── pruebas_conversaciones.py              # Conversaciones de prueba (las ejecuta test_chatbot.py)
+├── test_chatbot.py                        # Pruebas (pytest): una por conversación
+├── pytest.ini                             # Configuración de pytest
 ├── data/plataforma_servicios_bancarios.raml  # Base de conocimiento (API RAML 1.0)
-├── evidencias/                            # Transcripciones y resultados de las pruebas
+├── evidencias/                            # Transcripción, resultados y generalización (los genera test_chatbot.py)
 ├── .vscode/launch.json                    # Configuraciones de ejecución
 └── requirements.txt
 ```
@@ -72,10 +71,16 @@ pip install -r requirements.txt
 3. Ejecuta desde la terminal o desde *Run and Debug* (configuraciones en `.vscode/launch.json`):
 
 ```bash
-python pruebas_conversaciones.py   # conversaciones + generalización; guarda evidencias/
-python -m pytest                   # conversaciones + pruebas unitarias de componentes y del lector RAML
+python -m pytest test_chatbot.py   # pruebas: una por conversación; al terminar regenera evidencias/
 python chatbot_servicios.py        # modo interactivo
 ```
+
+Al terminar, `test_chatbot.py` guarda en `evidencias/` la transcripción de las conversaciones
+(`transcripcion_pruebas.txt`), los resultados por turno (`resultados_pruebas.json`) y la prueba de
+generalización (`prueba_generalizacion.txt`).
+
+Para ejecutar sólo algunas conversaciones: `python -m pytest test_chatbot.py -k c02` (o `-k "c13 or c14"`).
+Desde VS Code, las pruebas también aparecen en el panel *Testing* (configurado con pytest).
 
 Los recursos de NLTK (`punkt_tab`, `stopwords`) se descargan solos la primera vez.
 El notebook `Avance1_Chatbot_Servicios_REST.ipynb` también corre en VS Code y en Google Colab.
@@ -100,7 +105,7 @@ El inventario se construye desde `data/plataforma_servicios_bancarios.raml`. Cad
 
 Para usar otro inventario, reemplaza el archivo `.raml` (o cambia `RUTA_INVENTARIO` en `chatbot_servicios.py`).
 Para revisar cómo se interpreta, ejecuta `python inventario_raml.py data/plataforma_servicios_bancarios.raml`.
-Las pruebas de `pruebas_conversaciones.py` hacen referencia a las operaciones como `"MÉTODO /endpoint"`, así que no
+Las conversaciones de prueba (`pruebas_conversaciones.py`, ejecutadas por `test_chatbot.py`) hacen referencia a las operaciones como `"MÉTODO /endpoint"`, así que no
 dependen del orden de los IDs; si cambias el RAML, revisa que sus mensajes y resultados esperados sigan aplicando.
 
 ## Intenciones soportadas
@@ -119,12 +124,12 @@ dependen del orden de los IDs; si cambias el RAML, revisa que sus mensajes y res
 
 ## Resultados del Avance 1
 
-- 19 conversaciones, 37 turnos. Cada turno verifica la intención y, en búsquedas y detalles, el servicio
-  que nombra la respuesta (o que no nombre ninguno, cuando se espera una brecha). C13–C19 reproducen
-  errores encontrados en las revisiones (ya corregidos).
+- `python -m pytest test_chatbot.py`: 19 conversaciones, 37 turnos, todas correctas. Cada turno verifica
+  la intención y, en búsquedas y detalles, el servicio que nombra la respuesta (o que no nombre ninguno,
+  cuando se espera una brecha). C13–C19 reproducen errores encontrados en las revisiones (ya corregidos).
   Estado actual: 37/37 intenciones, 21/21 servicios, 37/37 turnos correctos.
-- `python -m pytest`: 63 pruebas (19 conversaciones + 44 unitarias), todas correctas.
-- Prueba de generalización (mejor servicio recomendado, o brecha cuando no existe servicio):
+- Prueba de generalización (mejor servicio recomendado, o brecha cuando no existe servicio; ver
+  `evidencias/prueba_generalizacion.txt`):
   - Conjunto de ajuste (12 consultas, usadas para elegir los parámetros y sinónimos): 7/12.
   - Conjunto de validación (24 consultas escritas antes de ajustar): 16/24
     (12/20 servicios correctos y 4/4 brechas detectadas). Algunos sinónimos ("revisar", "pedir",
