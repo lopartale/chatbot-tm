@@ -2,217 +2,445 @@
   {
     "conversacion": "C01 Saludo y ayuda",
     "mensaje": "Hola",
+    "respuesta": "¡Hola! Soy el asistente de servicios REST. Descríbeme la funcionalidad o la pantalla que necesitas y te digo qué servicios del inventario la cubren.",
     "esperada": "charla",
     "obtenida": "charla",
-    "correcto": true,
-    "respuesta": "¡Hola! Soy el asistente de servicios REST. Descríbeme la funcionalidad o la pantalla que necesitas y te digo qué servicios del inventario la cubren."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C01 Saludo y ayuda",
     "mensaje": "¿Qué puedes hacer?",
+    "respuesta": "Puedo ayudarte a:\n  1) Buscar un servicio por funcionalidad (ej. 'servicio para consultar saldo').\n  2) Analizar un requerimiento o pantalla con varias funciones y mostrar la cobertura.\n  3) Ver el detalle o contrato de un servicio (ej. 'detalle de SRV-007').\n  4) Listar los dominios y servicios del inventario.\n  5) Orientarte cuando exista una brecha (funcionalidad sin servicio).",
     "esperada": "charla",
     "obtenida": "charla",
-    "correcto": true,
-    "respuesta": "Puedo ayudarte a:\n  1) Buscar un servicio por funcionalidad (ej. 'servicio para consultar saldo').\n  2) Analizar un requerimiento o pantalla con varias funciones y mostrar la cobertura.\n  3) Ver el detalle o contrato de un servicio (ej. 'detalle de SRV-007').\n  4) Listar los dominios y servicios del inventario.\n  5) Orientarte cuando exista una brecha (funcionalidad sin servicio)."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C01 Saludo y ayuda",
     "mensaje": "Gracias",
+    "respuesta": "Con gusto. ¿Quieres analizar otro requerimiento?",
     "esperada": "charla",
     "obtenida": "charla",
-    "correcto": true,
-    "respuesta": "Con gusto. ¿Quieres analizar otro requerimiento?"
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C02 Búsqueda simple",
     "mensaje": "¿Existe un servicio para consultar el saldo de una cuenta?",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-015 Consulta los datos operativos de una cuenta y su saldo disponible [GET /cuentas/{idCuenta}] - puntaje 8.98\n  2) SRV-007 Lista las cuentas bancarias asociadas al cliente [GET /clientes/{idCliente}/cuentas] - puntaje 6.73\n  3) SRV-013 Consulta cuentas disponibles para el usuario autorizado y permite… [GET /cuentas] - puntaje 6.73\nEscribe 'detalle del primero' o el ID para ver su contrato.",
     "esperada": "buscar_servicio",
     "obtenida": "buscar_servicio",
-    "correcto": true,
-    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-007 Consulta de saldo [GET /api/v1/cuentas/{idCuenta}/saldo] - puntaje 3.07\n  2) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.07\nEscribe 'detalle del primero' o el ID para ver su contrato."
+    "operacion_esperada": "GET /cuentas/{idCuenta}",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C02 Búsqueda simple",
     "mensaje": "Dame el detalle del primero",
+    "respuesta": "SRV-015 - Consulta los datos operativos de una cuenta y su saldo disponible (dominio cuentas)\n  Método/endpoint: GET /cuentas/{idCuenta}\n  URL: https://banfake.mx/v1/cuentas/{idCuenta}\n  Descripción: Consulta los datos operativos de una cuenta y su saldo disponible.\n  Recurso: Cuenta bancaria individual con su saldo y estado operativo.\n  Entrada: Ruta: idCuenta: string\n  Salida: 200 Cuenta {idCuenta: string, idCliente: string, tipo: string (debito|ahorro|nomina|corriente), numeroEnmascarado: string, saldoDisponible: Dinero, estado: string (activa|bloqueada|cancelada|pendiente)} - Cuenta encontrada y visible para el solicitante.\n  Controles: token Bearer en el encabezado Authorization",
     "esperada": "detalle_servicio",
     "obtenida": "detalle_servicio",
-    "correcto": true,
-    "respuesta": "SRV-007 - Consulta de saldo (dominio Cuentas)\n  Método/endpoint: GET /api/v1/cuentas/{idCuenta}/saldo\n  Descripción: Devuelve el saldo disponible y el saldo contable de una cuenta.\n  Entrada: idCuenta\n  Salida: saldoDisponible, saldoContable, moneda\n  Equipo responsable: Cuentas"
+    "operacion_esperada": "GET /cuentas/{idCuenta}",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C03 Búsqueda con sinónimo",
     "mensaje": "Necesito una API de login para que el usuario pueda ingresar",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-045 Valida las credenciales del usuario e inicia una sesión con permisos… [POST /autenticacion/sesiones] - puntaje 13.78\n  2) SRV-046 Revoca la sesión indicada para impedir que sus tokens sigan… [DELETE /autenticacion/sesiones/{idSesion}] - puntaje 13.78\n  3) SRV-048 Verifica un código de un solo uso para reforzar la autenticación… [POST /autenticacion/verificacion-segundo-factor] - puntaje 11.78\nEscribe 'detalle del primero' o el ID para ver su contrato.",
     "esperada": "buscar_servicio",
     "obtenida": "buscar_servicio",
-    "correcto": true,
-    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-001 Autenticación de usuario [POST /api/v1/auth/login] - puntaje 2.0\nEscribe 'detalle del primero' o el ID para ver su contrato."
+    "operacion_esperada": "POST /autenticacion/sesiones",
+    "operacion_obtenida": "POST /autenticacion/sesiones",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C03 Búsqueda con sinónimo",
     "mensaje": "¿Cuál es el contrato?",
+    "respuesta": "SRV-045 - Valida las credenciales del usuario e inicia una sesión con permisos… (dominio autenticacion)\n  Método/endpoint: POST /autenticacion/sesiones\n  URL: https://banfake.mx/v1/autenticacion/sesiones\n  Descripción: Valida las credenciales del usuario e inicia una sesión con permisos acordes a su identidad y perfil.\n  Recurso: Sesiones de acceso que el usuario inicia al validar sus credenciales.\n  Entrada: Encabezados: X-Canal (obligatorio), X-Id-Dispositivo (opcional); Cuerpo: {usuario: string, secreto: string}\n  Salida: 201 {tokenAcceso: string, tipoToken: string (Bearer), expiraEnSegundos: integer, tokenRenovacion: string, idSesion: string} - Sesión iniciada y tokens emitidos.\n  Controles: no requiere token de acceso (endpoint de acceso)",
     "esperada": "detalle_servicio",
     "obtenida": "detalle_servicio",
-    "correcto": true,
-    "respuesta": "SRV-001 - Autenticación de usuario (dominio Seguridad)\n  Método/endpoint: POST /api/v1/auth/login\n  Descripción: Valida credenciales y devuelve un token de acceso JWT.\n  Entrada: usuario, contraseña\n  Salida: token, expiracion, perfil\n  Equipo responsable: Plataforma"
+    "operacion_esperada": "POST /autenticacion/sesiones",
+    "operacion_obtenida": "POST /autenticacion/sesiones",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C04 Requerimiento de pantalla completo",
-    "mensaje": "Requerimiento: pantalla para buscar un cliente por RFC, mostrar su saldo, consultar movimientos y registrar un pago",
+    "mensaje": "Requerimiento: pantalla para buscar un cliente por correo, mostrar sus cuentas, consultar movimientos y registrar un pago",
+    "respuesta": "Analicé 4 necesidades funcionales. Cobertura: 100%.\n  [OK] 'pantalla para buscar un cliente por correo' -> SRV-001 Consulta clientes visibles para el usuario autorizado (GET /clientes)\n  [OK] 'mostrar sus cuentas' -> SRV-007 Lista las cuentas bancarias asociadas al cliente (GET /clientes/{idCliente}/cuentas)\n  [OK] 'consultar movimientos' -> SRV-017 Consulta el historial de cargos (GET /cuentas/{idCuenta}/movimientos)\n  [OK] 'registrar un pago' -> SRV-023 Registra un pago extraordinario o una mensualidad del préstamo y… (POST /prestamos/{idPrestamo}/pagos)",
     "esperada": "analizar_requerimiento",
     "obtenida": "analizar_requerimiento",
-    "correcto": true,
-    "respuesta": "Analicé 4 necesidades funcionales. Cobertura: 100%.\n  [OK] 'pantalla para buscar un cliente por rfc' -> SRV-004 Búsqueda de clientes (GET /api/v1/clientes?nombre=&rfc=)\n  [OK] 'mostrar su saldo' -> SRV-007 Consulta de saldo (GET /api/v1/cuentas/{idCuenta}/saldo)\n  [OK] 'consultar movimientos' -> SRV-008 Consulta de movimientos (GET /api/v1/cuentas/{idCuenta}/movimientos)\n  [OK] 'registrar un pago' -> SRV-010 Registro de pago (POST /api/v1/pagos)"
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C04 Requerimiento de pantalla completo",
     "mensaje": "detalle del tercero",
+    "respuesta": "SRV-017 - Consulta el historial de cargos (dominio cuentas)\n  Método/endpoint: GET /cuentas/{idCuenta}/movimientos\n  URL: https://banfake.mx/v1/cuentas/{idCuenta}/movimientos\n  Descripción: Consulta el historial de cargos, abonos, retenciones y liberaciones de la cuenta.\n  Recurso: Historial contable de la cuenta que permite al cliente conciliar cargos y abonos.\n  Entrada: Ruta: idCuenta: string; Consulta: pageSize?: integer, paginationKey?: string, desde?: date-only, hasta?: date-only, tipo?: string (abono|cargo|retencion|liberacion)\n  Salida: 200 PaginaResultado {paginationKey?: string, elementos: Movimiento[]} - Movimientos encontrados para el periodo solicitado.\n  Controles: token Bearer en el encabezado Authorization",
     "esperada": "detalle_servicio",
     "obtenida": "detalle_servicio",
-    "correcto": true,
-    "respuesta": "SRV-008 - Consulta de movimientos (dominio Cuentas)\n  Método/endpoint: GET /api/v1/cuentas/{idCuenta}/movimientos\n  Descripción: Lista los movimientos de una cuenta en un rango de fechas.\n  Entrada: idCuenta, fechaInicio, fechaFin\n  Salida: lista de movimientos\n  Equipo responsable: Cuentas"
+    "operacion_esperada": "GET /cuentas/{idCuenta}/movimientos",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}/movimientos",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C05 Requerimiento con brecha",
     "mensaje": "Necesito una pantalla de alta de cliente, validar el código postal, calcular el score crediticio y enviar un correo de bienvenida",
+    "respuesta": "Analicé 4 necesidades funcionales. Cobertura: 50%.\n  [OK] 'alta de cliente' -> SRV-002 Registra un cliente nuevo y crea su expediente básico para iniciar la… (POST /clientes)\n  [OK] 'validar el codigo postal' -> SRV-048 Verifica un código de un solo uso para reforzar la autenticación… (POST /autenticacion/verificacion-segundo-factor)\n  [BRECHA] 'calcular el score crediticio' -> sin servicio en el inventario\n  [BRECHA] 'enviar un correo de bienvenida' -> sin servicio en el inventario\nSugerencia: valida las brechas con el equipo de arquitectura antes de crear un servicio nuevo.",
     "esperada": "analizar_requerimiento",
     "obtenida": "analizar_requerimiento",
-    "correcto": true,
-    "respuesta": "Analicé 4 necesidades funcionales. Cobertura: 75%.\n  [OK] 'alta de cliente' -> SRV-005 Alta de cliente (POST /api/v1/clientes)\n  [OK] 'validar el codigo postal' -> SRV-016 Consulta de código postal (GET /api/v1/catalogos/codigos-postales/{cp})\n  [OK] 'enviar un correo de bienvenida' -> SRV-015 Envío de notificaciones (POST /api/v1/notificaciones)\n  [BRECHA] 'calcular el score crediticio' -> sin servicio en el inventario\nSugerencia: valida las brechas con el equipo de arquitectura antes de crear un servicio nuevo."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C05 Requerimiento con brecha",
     "mensaje": "¿Qué hago si no existe el servicio?",
+    "respuesta": "Cuando una funcionalidad no tiene servicio (brecha), te sugiero: \n  1) Reformular con otros términos o revisar servicios similares.\n  2) Verificar si un servicio existente puede extenderse.\n  3) Registrar la brecha con el equipo de arquitectura para evaluar un servicio nuevo.",
     "esperada": "reportar_brecha",
     "obtenida": "reportar_brecha",
-    "correcto": true,
-    "respuesta": "Cuando una funcionalidad no tiene servicio (brecha), te sugiero: \n  1) Reformular con otros términos o revisar servicios similares.\n  2) Verificar si un servicio existente puede extenderse.\n  3) Registrar la brecha con el equipo de arquitectura para evaluar un servicio nuevo."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C06 Exploración del inventario",
     "mensaje": "¿Qué servicios hay en el inventario?",
+    "respuesta": "El inventario tiene 57 servicios en estos dominios:\n  - autenticacion: 5 servicio(s)\n  - clientes: 12 servicio(s)\n  - criptografia: 3 servicio(s)\n  - cuentas: 6 servicio(s)\n  - documentos: 5 servicio(s)\n  - hipotecas: 5 servicio(s)\n  - pagos: 5 servicio(s)\n  - prestamos: 5 servicio(s)\n  - seguros: 6 servicio(s)\n  - transferencias: 5 servicio(s)\nPide, por ejemplo, 'servicios de pagos' para ver el detalle de un dominio.",
     "esperada": "listar_dominios",
     "obtenida": "listar_dominios",
-    "correcto": true,
-    "respuesta": "El inventario tiene 17 servicios en estos dominios:\n  - Catálogos: 1 servicio(s)\n  - Clientes: 4 servicio(s)\n  - Cuentas: 3 servicio(s)\n  - Documentos: 1 servicio(s)\n  - Notificaciones: 1 servicio(s)\n  - Pagos: 2 servicio(s)\n  - Pedidos: 2 servicio(s)\n  - Productos: 1 servicio(s)\n  - Seguridad: 2 servicio(s)\nPide, por ejemplo, 'servicios de pagos' para ver el detalle de un dominio."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C06 Exploración del inventario",
     "mensaje": "Muéstrame los servicios de pagos",
+    "respuesta": "Servicios del dominio pagos:\n  - SRV-029 Consulta pagos realizados o pendientes por el cliente autorizado [GET /pagos]\n  - SRV-030 Ejecuta el pago de un servicio o convenio desde una cuenta autorizada [POST /pagos]\n  - SRV-031 Consulta los proveedores y convenios de pago habilitados para el banco [GET /pagos/convenios]\n  - SRV-032 Consulta las reglas de captura y validación que aplica un convenio… [GET /pagos/convenios/{idConvenio}]\n  - SRV-033 Consulta el estado [GET /pagos/{idPago}]",
     "esperada": "listar_por_dominio",
     "obtenida": "listar_por_dominio",
-    "correcto": true,
-    "respuesta": "Servicios del dominio Pagos:\n  - SRV-010 Registro de pago [POST /api/v1/pagos]\n  - SRV-011 Consulta de estatus de pago [GET /api/v1/pagos/{idPago}]"
+    "operacion_esperada": "GET /pagos",
+    "operacion_obtenida": "GET /pagos",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C06 Exploración del inventario",
-    "mensaje": "Detalle de SRV-011",
+    "mensaje": "Detalle de SRV-026",
+    "respuesta": "SRV-026 - Consulta el estado (dominio transferencias)\n  Método/endpoint: GET /transferencias/{idTransferencia}\n  URL: https://banfake.mx/v1/transferencias/{idTransferencia}\n  Descripción: Consulta el estado, los datos principales y el resultado de una transferencia.\n  Recurso: Orden de transferencia individual y su resultado de procesamiento.\n  Entrada: Ruta: idTransferencia: string\n  Salida: 200 {idTransferencia: string, importe: Dinero, estado: EstadoTransferencia, motivoRechazo?: string, fechaLiquidacion?: datetime} - Transferencia encontrada.\n  Controles: token Bearer en el encabezado Authorization",
     "esperada": "detalle_servicio",
     "obtenida": "detalle_servicio",
-    "correcto": true,
-    "respuesta": "SRV-011 - Consulta de estatus de pago (dominio Pagos)\n  Método/endpoint: GET /api/v1/pagos/{idPago}\n  Descripción: Consulta el estatus de un pago registrado.\n  Entrada: idPago\n  Salida: estatus, fecha, monto\n  Equipo responsable: Pagos"
+    "operacion_esperada": "GET /transferencias/{idTransferencia}",
+    "operacion_obtenida": "GET /transferencias/{idTransferencia}",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C07 Consulta directa por ID",
-    "mensaje": "srv-13",
+    "mensaje": "srv-015",
+    "respuesta": "SRV-015 - Consulta los datos operativos de una cuenta y su saldo disponible (dominio cuentas)\n  Método/endpoint: GET /cuentas/{idCuenta}\n  URL: https://banfake.mx/v1/cuentas/{idCuenta}\n  Descripción: Consulta los datos operativos de una cuenta y su saldo disponible.\n  Recurso: Cuenta bancaria individual con su saldo y estado operativo.\n  Entrada: Ruta: idCuenta: string\n  Salida: 200 Cuenta {idCuenta: string, idCliente: string, tipo: string (debito|ahorro|nomina|corriente), numeroEnmascarado: string, saldoDisponible: Dinero, estado: string (activa|bloqueada|cancelada|pendiente)} - Cuenta encontrada y visible para el solicitante.\n  Controles: token Bearer en el encabezado Authorization",
     "esperada": "detalle_servicio",
     "obtenida": "detalle_servicio",
-    "correcto": true,
-    "respuesta": "SRV-013 - Creación de pedido (dominio Pedidos)\n  Método/endpoint: POST /api/v1/pedidos\n  Descripción: Crea un pedido a partir de un carrito de compra.\n  Entrada: idCliente, productos, direccionEntrega\n  Salida: idPedido, total\n  Equipo responsable: Comercio"
+    "operacion_esperada": "GET /cuentas/{idCuenta}",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C07 Consulta directa por ID",
-    "mensaje": "¿Hay servicio para ver el historial de pedidos del cliente?",
+    "mensaje": "¿Hay servicio para ver el historial de movimientos de la cuenta?",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 17.43\nEscribe 'detalle del primero' o el ID para ver su contrato.",
     "esperada": "buscar_servicio",
     "obtenida": "buscar_servicio",
-    "correcto": true,
-    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-014 Historial de pedidos [GET /api/v1/clientes/{idCliente}/pedidos] - puntaje 2.33\n  2) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.0\n  3) SRV-013 Creación de pedido [POST /api/v1/pedidos] - puntaje 1.0\nEscribe 'detalle del primero' o el ID para ver su contrato."
+    "operacion_esperada": "GET /cuentas/{idCuenta}/movimientos",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}/movimientos",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C08 Imagen de pantalla (fuera de v1)",
     "mensaje": "Te comparto la imagen del mockup de Figma",
+    "respuesta": "El análisis de imágenes de pantallas aún no está disponible en esta versión. Se incorporará en el Avance 2 con clasificación de imágenes. Por ahora, describe en texto los elementos de la pantalla (campos, botones, acciones).",
     "esperada": "analizar_imagen",
     "obtenida": "analizar_imagen",
-    "correcto": true,
-    "respuesta": "El análisis de imágenes de pantallas aún no está disponible en esta versión. Se incorporará en el Avance 2 con clasificación de imágenes. Por ahora, describe en texto los elementos de la pantalla (campos, botones, acciones)."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C08 Imagen de pantalla (fuera de v1)",
-    "mensaje": "Pantalla con catálogo de productos, carrito de compra y pago con tarjeta",
+    "mensaje": "Pantalla con resumen de cuentas, transferencia a un beneficiario y pago de servicios",
+    "respuesta": "Analicé 3 necesidades funcionales. Cobertura: 100%.\n  [OK] 'resumen de cuentas' -> SRV-007 Lista las cuentas bancarias asociadas al cliente (GET /clientes/{idCliente}/cuentas)\n  [OK] 'transferencia a un beneficiario' -> SRV-025 Ordena una transferencia entre cuentas propias o hacia otro banco (POST /transferencias)\n  [OK] 'pago de servicios' -> SRV-023 Registra un pago extraordinario o una mensualidad del préstamo y… (POST /prestamos/{idPrestamo}/pagos)",
     "esperada": "analizar_requerimiento",
     "obtenida": "analizar_requerimiento",
-    "correcto": true,
-    "respuesta": "Analicé 3 necesidades funcionales. Cobertura: 100%.\n  [OK] 'catalogo de productos' -> SRV-012 Catálogo de productos (GET /api/v1/productos)\n  [OK] 'carrito de compra' -> SRV-013 Creación de pedido (POST /api/v1/pedidos)\n  [OK] 'pago con tarjeta' -> SRV-010 Registro de pago (POST /api/v1/pagos)"
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C09 Sin palabra disparadora",
-    "mensaje": "transacciones de la cuenta del último mes",
+    "mensaje": "movimientos de la cuenta del último mes",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 12.39\nEscribe 'detalle del primero' o el ID para ver su contrato.",
     "esperada": "buscar_servicio",
     "obtenida": "buscar_servicio",
-    "correcto": true,
-    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 2.67\nEscribe 'detalle del primero' o el ID para ver su contrato."
+    "operacion_esperada": "GET /cuentas/{idCuenta}/movimientos",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}/movimientos",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C09 Sin palabra disparadora",
     "mensaje": "estado de cuenta en pdf",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-018 Solicita generar un estado de cuenta para un periodo específico [POST /cuentas/{idCuenta}/estado-cuenta] - puntaje 6.96\n  2) SRV-007 Lista las cuentas bancarias asociadas al cliente [GET /clientes/{idCliente}/cuentas] - puntaje 4.31\n  3) SRV-013 Consulta cuentas disponibles para el usuario autorizado y permite… [GET /cuentas] - puntaje 4.31\nEscribe 'detalle del primero' o el ID para ver su contrato.",
     "esperada": "buscar_servicio",
     "obtenida": "buscar_servicio",
-    "correcto": true,
-    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-009 Estado de cuenta [GET /api/v1/cuentas/{idCuenta}/estado-cuenta] - puntaje 2.67\nEscribe 'detalle del primero' o el ID para ver su contrato."
+    "operacion_esperada": "POST /cuentas/{idCuenta}/estado-cuenta",
+    "operacion_obtenida": "POST /cuentas/{idCuenta}/estado-cuenta",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C10 Fuera de alcance",
     "mensaje": "¿Cuál es el clima en Monterrey?",
+    "respuesta": "No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos.",
     "esperada": "fuera_de_alcance",
     "obtenida": "fuera_de_alcance",
-    "correcto": true,
-    "respuesta": "No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C10 Fuera de alcance",
     "mensaje": "Cuéntame un chiste",
+    "respuesta": "No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos.",
     "esperada": "fuera_de_alcance",
     "obtenida": "fuera_de_alcance",
-    "correcto": true,
-    "respuesta": "No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C10 Fuera de alcance",
     "mensaje": "ayuda",
+    "respuesta": "Puedo ayudarte a:\n  1) Buscar un servicio por funcionalidad (ej. 'servicio para consultar saldo').\n  2) Analizar un requerimiento o pantalla con varias funciones y mostrar la cobertura.\n  3) Ver el detalle o contrato de un servicio (ej. 'detalle de SRV-007').\n  4) Listar los dominios y servicios del inventario.\n  5) Orientarte cuando exista una brecha (funcionalidad sin servicio).",
     "esperada": "charla",
     "obtenida": "charla",
-    "correcto": true,
-    "respuesta": "Puedo ayudarte a:\n  1) Buscar un servicio por funcionalidad (ej. 'servicio para consultar saldo').\n  2) Analizar un requerimiento o pantalla con varias funciones y mostrar la cobertura.\n  3) Ver el detalle o contrato de un servicio (ej. 'detalle de SRV-007').\n  4) Listar los dominios y servicios del inventario.\n  5) Orientarte cuando exista una brecha (funcionalidad sin servicio)."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
-    "conversacion": "C11 Documentos y notificaciones",
-    "mensaje": "Necesito subir la identificación del cliente y avisarle por SMS",
+    "conversacion": "C11 Comprobantes y beneficiarios",
+    "mensaje": "Necesito generar el comprobante de una transferencia",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-028 Solicita generar un comprobante de la transferencia para descarga… [POST /transferencias/{idTransferencia}/comprobante] - puntaje 14.66\n  2) SRV-054 Solicita la generación asíncrona de un documento bancario a partir de… [POST /documentos] - puntaje 5.79\n  3) SRV-053 Consulta documentos generados para el usuario autorizado [GET /documentos] - puntaje 4.79\nEscribe 'detalle del primero' o el ID para ver su contrato.",
     "esperada": "buscar_servicio",
     "obtenida": "buscar_servicio",
-    "correcto": true,
-    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-017 Carga de documentos [POST /api/v1/documentos] - puntaje 2.17\n  2) SRV-015 Envío de notificaciones [POST /api/v1/notificaciones] - puntaje 2.0\n  3) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.0\nEscribe 'detalle del primero' o el ID para ver su contrato."
+    "operacion_esperada": "POST /transferencias/{idTransferencia}/comprobante",
+    "operacion_obtenida": "POST /transferencias/{idTransferencia}/comprobante",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
-    "conversacion": "C11 Documentos y notificaciones",
-    "mensaje": "Formulario para adjuntar comprobante de domicilio y actualizar el teléfono del cliente",
+    "conversacion": "C11 Comprobantes y beneficiarios",
+    "mensaje": "Formulario para registrar un beneficiario con su límite diario y correo de notificación",
+    "respuesta": "Analicé 2 necesidades funcionales. Cobertura: 100%.\n  [OK] 'registrar un beneficiario con su limite diario' -> SRV-009 Registra un beneficiario nuevo (POST /clientes/{idCliente}/beneficiarios)\n  [OK] 'correo de notificacion' -> SRV-009 Registra un beneficiario nuevo (POST /clientes/{idCliente}/beneficiarios)",
     "esperada": "analizar_requerimiento",
     "obtenida": "analizar_requerimiento",
-    "correcto": true,
-    "respuesta": "Analicé 2 necesidades funcionales. Cobertura: 100%.\n  [OK] 'adjuntar comprobante de domicilio' -> SRV-017 Carga de documentos (POST /api/v1/documentos)\n  [OK] 'actualizar el telefono del cliente' -> SRV-006 Actualización de datos de contacto (PATCH /api/v1/clientes/{idCliente}/contacto)"
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C12 Cierre de sesión y despedida",
     "mensaje": "¿Existe un endpoint de logout?",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-046 Revoca la sesión indicada para impedir que sus tokens sigan… [DELETE /autenticacion/sesiones/{idSesion}] - puntaje 3.35\n  2) SRV-047 Emite un nuevo token de acceso a partir de un token de renovación… [POST /autenticacion/renovacion] - puntaje 3.35\nEscribe 'detalle del primero' o el ID para ver su contrato.",
     "esperada": "buscar_servicio",
     "obtenida": "buscar_servicio",
-    "correcto": true,
-    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-002 Cierre de sesión [POST /api/v1/auth/logout] - puntaje 2.0\nEscribe 'detalle del primero' o el ID para ver su contrato."
+    "operacion_esperada": "DELETE /autenticacion/sesiones/{idSesion}",
+    "operacion_obtenida": "DELETE /autenticacion/sesiones/{idSesion}",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   },
   {
     "conversacion": "C12 Cierre de sesión y despedida",
     "mensaje": "Adiós",
+    "respuesta": "¡Hasta luego! Recuerda reutilizar antes de construir.",
     "esperada": "charla",
     "obtenida": "charla",
-    "correcto": true,
-    "respuesta": "¡Hasta luego! Recuerda reutilizar antes de construir."
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C13 Fuera de dominio con palabra disparadora",
+    "mensaje": "¿Qué ropa uso para mañana?",
+    "respuesta": "No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos.",
+    "esperada": "fuera_de_alcance",
+    "obtenida": "fuera_de_alcance",
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C14 Charla seguida de una petición",
+    "mensaje": "Perfecto, ahora necesito un servicio para consultar movimientos",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 12.51\nEscribe 'detalle del primero' o el ID para ver su contrato.",
+    "esperada": "buscar_servicio",
+    "obtenida": "buscar_servicio",
+    "operacion_esperada": "GET /cuentas/{idCuenta}/movimientos",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}/movimientos",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C15 Búsqueda que menciona el inventario",
+    "mensaje": "¿Existe en el inventario un servicio para consultar el saldo?",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-015 Consulta los datos operativos de una cuenta y su saldo disponible [GET /cuentas/{idCuenta}] - puntaje 4.67\n  2) SRV-021 Consulta el estado [GET /prestamos/{idPrestamo}] - puntaje 4.67\n  3) SRV-053 Consulta documentos generados para el usuario autorizado [GET /documentos] - puntaje 4.67\nEscribe 'detalle del primero' o el ID para ver su contrato.",
+    "esperada": "buscar_servicio",
+    "obtenida": "buscar_servicio",
+    "operacion_esperada": "GET /cuentas/{idCuenta}",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C16 Detalle de un servicio nombrado tras una búsqueda",
+    "mensaje": "servicio para consultar movimientos",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 12.51\nEscribe 'detalle del primero' o el ID para ver su contrato.",
+    "esperada": "buscar_servicio",
+    "obtenida": "buscar_servicio",
+    "operacion_esperada": "GET /cuentas/{idCuenta}/movimientos",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}/movimientos",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C16 Detalle de un servicio nombrado tras una búsqueda",
+    "mensaje": "dame el contrato del servicio de cancelación de seguros",
+    "respuesta": "SRV-043 - Solicita cancelar una póliza vigente (dominio seguros)\n  Método/endpoint: POST /seguros/{idSeguro}/cancelacion\n  URL: https://banfake.mx/v1/seguros/{idSeguro}/cancelacion\n  Descripción: Solicita cancelar una póliza vigente; el banco calcula la fecha efectiva y, cuando aplica, la prima no devengada que se reembolsará.\n  Recurso: Solicitud del cliente para dar por terminada una póliza vigente.\n  Entrada: Ruta: idSeguro: string; Encabezados: X-Clave-Idempotencia (obligatorio), X-Factor-Confirmacion (obligatorio); Cuerpo: {motivo: string (solicitud_cliente|cambio_aseguradora|venta_bien_asegurado|otro), comentario?: string, fechaEfectivaSolicitada?: date-only}\n  Salida: 202 {idSeguro: string, estadoSolicitud: string (recibida|aplicada), fechaEfectiva: date-only, reembolso?: Dinero} - Solicitud de cancelación recibida para validación.\n  Controles: token Bearer en el encabezado Authorization; idempotencia (encabezado X-Clave-Idempotencia); segundo factor (encabezado X-Factor-Confirmacion)",
+    "esperada": "detalle_servicio",
+    "obtenida": "detalle_servicio",
+    "operacion_esperada": "POST /seguros/{idSeguro}/cancelacion",
+    "operacion_obtenida": "POST /seguros/{idSeguro}/cancelacion",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C17 Dominio que aparece junto a otro",
+    "mensaje": "servicios de seguros para clientes",
+    "respuesta": "Servicios del dominio seguros:\n  - SRV-039 Consulta pólizas y cotizaciones de seguros asociadas a un cliente [GET /seguros]\n  - SRV-040 Genera una cotización de seguro para el cliente según el tipo de… [POST /seguros]\n  - SRV-041 Consulta cobertura [GET /seguros/{idSeguro}]\n  - SRV-042 Acepta una cotización y solicita emitir la póliza después de validar… [POST /seguros/{idSeguro}/contratacion]\n  - SRV-043 Solicita cancelar una póliza vigente [POST /seguros/{idSeguro}/cancelacion]\n  - SRV-044 Solicita generar la carátula o certificado de la póliza para consulta… [POST /seguros/{idSeguro}/documento]",
+    "esperada": "listar_por_dominio",
+    "obtenida": "listar_por_dominio",
+    "operacion_esperada": "GET /seguros",
+    "operacion_obtenida": "GET /seguros",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C18 Requerimiento que contiene 'no existe'",
+    "mensaje": "servicio para validar que el cliente no existe antes de darlo de alta",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-014 Abre una cuenta bancaria después de validar identidad [POST /cuentas] - puntaje 6.18\n  2) SRV-002 Registra un cliente nuevo y crea su expediente básico para iniciar la… [POST /clientes] - puntaje 5.93\n  3) SRV-042 Acepta una cotización y solicita emitir la póliza después de validar… [POST /seguros/{idSeguro}/contratacion] - puntaje 5.36\nEscribe 'detalle del primero' o el ID para ver su contrato.",
+    "esperada": "buscar_servicio",
+    "obtenida": "buscar_servicio",
+    "operacion_esperada": null,
+    "operacion_obtenida": null,
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C19 Búsqueda sin resultados tras una recomendación",
+    "mensaje": "servicio para consultar movimientos",
+    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 12.51\nEscribe 'detalle del primero' o el ID para ver su contrato.",
+    "esperada": "buscar_servicio",
+    "obtenida": "buscar_servicio",
+    "operacion_esperada": "GET /cuentas/{idCuenta}/movimientos",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}/movimientos",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C19 Búsqueda sin resultados tras una recomendación",
+    "mensaje": "necesito un servicio para invertir en fondos",
+    "respuesta": "No encontré un servicio que cubra esa funcionalidad. \n  1) Reformular con otros términos o revisar servicios similares.\n  2) Verificar si un servicio existente puede extenderse.\n  3) Registrar la brecha con el equipo de arquitectura para evaluar un servicio nuevo.",
+    "esperada": "buscar_servicio",
+    "obtenida": "buscar_servicio",
+    "operacion_esperada": "sin servicio",
+    "operacion_obtenida": "sin servicio",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
+  },
+  {
+    "conversacion": "C19 Búsqueda sin resultados tras una recomendación",
+    "mensaje": "detalle del primero",
+    "respuesta": "SRV-017 - Consulta el historial de cargos (dominio cuentas)\n  Método/endpoint: GET /cuentas/{idCuenta}/movimientos\n  URL: https://banfake.mx/v1/cuentas/{idCuenta}/movimientos\n  Descripción: Consulta el historial de cargos, abonos, retenciones y liberaciones de la cuenta.\n  Recurso: Historial contable de la cuenta que permite al cliente conciliar cargos y abonos.\n  Entrada: Ruta: idCuenta: string; Consulta: pageSize?: integer, paginationKey?: string, desde?: date-only, hasta?: date-only, tipo?: string (abono|cargo|retencion|liberacion)\n  Salida: 200 PaginaResultado {paginationKey?: string, elementos: Movimiento[]} - Movimientos encontrados para el periodo solicitado.\n  Controles: token Bearer en el encabezado Authorization",
+    "esperada": "detalle_servicio",
+    "obtenida": "detalle_servicio",
+    "operacion_esperada": "GET /cuentas/{idCuenta}/movimientos",
+    "operacion_obtenida": "GET /cuentas/{idCuenta}/movimientos",
+    "intencion_ok": true,
+    "operacion_ok": true,
+    "correcto": true
   }
 ]
