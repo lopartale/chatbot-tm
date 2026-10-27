@@ -17,58 +17,67 @@ Bot: Con gusto. ¿Quieres analizar otro requerimiento?
 ===== C02 Búsqueda simple =====
 Tú : ¿Existe un servicio para consultar el saldo de una cuenta?
 Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
-       1) SRV-007 Consulta de saldo [GET /api/v1/cuentas/{idCuenta}/saldo] - puntaje 3.07
-       2) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.07
+       1) SRV-015 Consulta los datos operativos de una cuenta y su saldo disponible [GET /cuentas/{idCuenta}] - puntaje 8.98
+       2) SRV-007 Lista las cuentas bancarias asociadas al cliente [GET /clientes/{idCliente}/cuentas] - puntaje 6.73
+       3) SRV-013 Consulta cuentas disponibles para el usuario autorizado y permite… [GET /cuentas] - puntaje 6.73
      Escribe 'detalle del primero' o el ID para ver su contrato.
-     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: GET /cuentas/{idCuenta} | esperado: GET /cuentas/{idCuenta} | OK]
 Tú : Dame el detalle del primero
-Bot: SRV-007 - Consulta de saldo (dominio Cuentas)
-       Método/endpoint: GET /api/v1/cuentas/{idCuenta}/saldo
-       Descripción: Devuelve el saldo disponible y el saldo contable de una cuenta.
-       Entrada: idCuenta
-       Salida: saldoDisponible, saldoContable, moneda
-       Equipo responsable: Cuentas
-     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+Bot: SRV-015 - Consulta los datos operativos de una cuenta y su saldo disponible (dominio cuentas)
+       Método/endpoint: GET /cuentas/{idCuenta}
+       URL: https://banfake.mx/v1/cuentas/{idCuenta}
+       Descripción: Consulta los datos operativos de una cuenta y su saldo disponible.
+       Recurso: Cuenta bancaria individual con su saldo y estado operativo.
+       Entrada: Ruta: idCuenta: string
+       Salida: 200 Cuenta {idCuenta: string, idCliente: string, tipo: string (debito|ahorro|nomina|corriente), numeroEnmascarado: string, saldoDisponible: Dinero, estado: string (activa|bloqueada|cancelada|pendiente)} - Cuenta encontrada y visible para el solicitante.
+       Controles: token Bearer en el encabezado Authorization
+     [intención: detalle_servicio | esperada: detalle_servicio | servicio: GET /cuentas/{idCuenta} | esperado: GET /cuentas/{idCuenta} | OK]
 
 ===== C03 Búsqueda con sinónimo =====
 Tú : Necesito una API de login para que el usuario pueda ingresar
 Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
-       1) SRV-001 Autenticación de usuario [POST /api/v1/auth/login] - puntaje 2.0
+       1) SRV-045 Valida las credenciales del usuario e inicia una sesión con permisos… [POST /autenticacion/sesiones] - puntaje 13.78
+       2) SRV-046 Revoca la sesión indicada para impedir que sus tokens sigan… [DELETE /autenticacion/sesiones/{idSesion}] - puntaje 13.78
+       3) SRV-048 Verifica un código de un solo uso para reforzar la autenticación… [POST /autenticacion/verificacion-segundo-factor] - puntaje 11.78
      Escribe 'detalle del primero' o el ID para ver su contrato.
-     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: POST /autenticacion/sesiones | esperado: POST /autenticacion/sesiones | OK]
 Tú : ¿Cuál es el contrato?
-Bot: SRV-001 - Autenticación de usuario (dominio Seguridad)
-       Método/endpoint: POST /api/v1/auth/login
-       Descripción: Valida credenciales y devuelve un token de acceso JWT.
-       Entrada: usuario, contraseña
-       Salida: token, expiracion, perfil
-       Equipo responsable: Plataforma
-     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+Bot: SRV-045 - Valida las credenciales del usuario e inicia una sesión con permisos… (dominio autenticacion)
+       Método/endpoint: POST /autenticacion/sesiones
+       URL: https://banfake.mx/v1/autenticacion/sesiones
+       Descripción: Valida las credenciales del usuario e inicia una sesión con permisos acordes a su identidad y perfil.
+       Recurso: Sesiones de acceso que el usuario inicia al validar sus credenciales.
+       Entrada: Encabezados: X-Canal (obligatorio), X-Id-Dispositivo (opcional); Cuerpo: {usuario: string, secreto: string}
+       Salida: 201 {tokenAcceso: string, tipoToken: string (Bearer), expiraEnSegundos: integer, tokenRenovacion: string, idSesion: string} - Sesión iniciada y tokens emitidos.
+       Controles: no requiere token de acceso (endpoint de acceso)
+     [intención: detalle_servicio | esperada: detalle_servicio | servicio: POST /autenticacion/sesiones | esperado: POST /autenticacion/sesiones | OK]
 
 ===== C04 Requerimiento de pantalla completo =====
-Tú : Requerimiento: pantalla para buscar un cliente por RFC, mostrar su saldo, consultar movimientos y registrar un pago
+Tú : Requerimiento: pantalla para buscar un cliente por correo, mostrar sus cuentas, consultar movimientos y registrar un pago
 Bot: Analicé 4 necesidades funcionales. Cobertura: 100%.
-       [OK] 'pantalla para buscar un cliente por rfc' -> SRV-004 Búsqueda de clientes (GET /api/v1/clientes?nombre=&rfc=)
-       [OK] 'mostrar su saldo' -> SRV-007 Consulta de saldo (GET /api/v1/cuentas/{idCuenta}/saldo)
-       [OK] 'consultar movimientos' -> SRV-008 Consulta de movimientos (GET /api/v1/cuentas/{idCuenta}/movimientos)
-       [OK] 'registrar un pago' -> SRV-010 Registro de pago (POST /api/v1/pagos)
+       [OK] 'pantalla para buscar un cliente por correo' -> SRV-001 Consulta clientes visibles para el usuario autorizado (GET /clientes)
+       [OK] 'mostrar sus cuentas' -> SRV-007 Lista las cuentas bancarias asociadas al cliente (GET /clientes/{idCliente}/cuentas)
+       [OK] 'consultar movimientos' -> SRV-017 Consulta el historial de cargos (GET /cuentas/{idCuenta}/movimientos)
+       [OK] 'registrar un pago' -> SRV-023 Registra un pago extraordinario o una mensualidad del préstamo y… (POST /prestamos/{idPrestamo}/pagos)
      [intención: analizar_requerimiento | esperada: analizar_requerimiento | OK]
 Tú : detalle del tercero
-Bot: SRV-008 - Consulta de movimientos (dominio Cuentas)
-       Método/endpoint: GET /api/v1/cuentas/{idCuenta}/movimientos
-       Descripción: Lista los movimientos de una cuenta en un rango de fechas.
-       Entrada: idCuenta, fechaInicio, fechaFin
-       Salida: lista de movimientos
-       Equipo responsable: Cuentas
-     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+Bot: SRV-017 - Consulta el historial de cargos (dominio cuentas)
+       Método/endpoint: GET /cuentas/{idCuenta}/movimientos
+       URL: https://banfake.mx/v1/cuentas/{idCuenta}/movimientos
+       Descripción: Consulta el historial de cargos, abonos, retenciones y liberaciones de la cuenta.
+       Recurso: Historial contable de la cuenta que permite al cliente conciliar cargos y abonos.
+       Entrada: Ruta: idCuenta: string; Consulta: pageSize?: integer, paginationKey?: string, desde?: date-only, hasta?: date-only, tipo?: string (abono|cargo|retencion|liberacion)
+       Salida: 200 PaginaResultado {paginationKey?: string, elementos: Movimiento[]} - Movimientos encontrados para el periodo solicitado.
+       Controles: token Bearer en el encabezado Authorization
+     [intención: detalle_servicio | esperada: detalle_servicio | servicio: GET /cuentas/{idCuenta}/movimientos | esperado: GET /cuentas/{idCuenta}/movimientos | OK]
 
 ===== C05 Requerimiento con brecha =====
 Tú : Necesito una pantalla de alta de cliente, validar el código postal, calcular el score crediticio y enviar un correo de bienvenida
-Bot: Analicé 4 necesidades funcionales. Cobertura: 75%.
-       [OK] 'alta de cliente' -> SRV-005 Alta de cliente (POST /api/v1/clientes)
-       [OK] 'validar el codigo postal' -> SRV-016 Consulta de código postal (GET /api/v1/catalogos/codigos-postales/{cp})
-       [OK] 'enviar un correo de bienvenida' -> SRV-015 Envío de notificaciones (POST /api/v1/notificaciones)
+Bot: Analicé 4 necesidades funcionales. Cobertura: 50%.
+       [OK] 'alta de cliente' -> SRV-002 Registra un cliente nuevo y crea su expediente básico para iniciar la… (POST /clientes)
+       [OK] 'validar el codigo postal' -> SRV-048 Verifica un código de un solo uso para reforzar la autenticación… (POST /autenticacion/verificacion-segundo-factor)
        [BRECHA] 'calcular el score crediticio' -> sin servicio en el inventario
+       [BRECHA] 'enviar un correo de bienvenida' -> sin servicio en el inventario
      Sugerencia: valida las brechas con el equipo de arquitectura antes de crear un servicio nuevo.
      [intención: analizar_requerimiento | esperada: analizar_requerimiento | OK]
 Tú : ¿Qué hago si no existe el servicio?
@@ -80,71 +89,79 @@ Bot: Cuando una funcionalidad no tiene servicio (brecha), te sugiero:
 
 ===== C06 Exploración del inventario =====
 Tú : ¿Qué servicios hay en el inventario?
-Bot: El inventario tiene 17 servicios en estos dominios:
-       - Catálogos: 1 servicio(s)
-       - Clientes: 4 servicio(s)
-       - Cuentas: 3 servicio(s)
-       - Documentos: 1 servicio(s)
-       - Notificaciones: 1 servicio(s)
-       - Pagos: 2 servicio(s)
-       - Pedidos: 2 servicio(s)
-       - Productos: 1 servicio(s)
-       - Seguridad: 2 servicio(s)
+Bot: El inventario tiene 57 servicios en estos dominios:
+       - autenticacion: 5 servicio(s)
+       - clientes: 12 servicio(s)
+       - criptografia: 3 servicio(s)
+       - cuentas: 6 servicio(s)
+       - documentos: 5 servicio(s)
+       - hipotecas: 5 servicio(s)
+       - pagos: 5 servicio(s)
+       - prestamos: 5 servicio(s)
+       - seguros: 6 servicio(s)
+       - transferencias: 5 servicio(s)
      Pide, por ejemplo, 'servicios de pagos' para ver el detalle de un dominio.
      [intención: listar_dominios | esperada: listar_dominios | OK]
 Tú : Muéstrame los servicios de pagos
-Bot: Servicios del dominio Pagos:
-       - SRV-010 Registro de pago [POST /api/v1/pagos]
-       - SRV-011 Consulta de estatus de pago [GET /api/v1/pagos/{idPago}]
-     [intención: listar_por_dominio | esperada: listar_por_dominio | OK]
-Tú : Detalle de SRV-011
-Bot: SRV-011 - Consulta de estatus de pago (dominio Pagos)
-       Método/endpoint: GET /api/v1/pagos/{idPago}
-       Descripción: Consulta el estatus de un pago registrado.
-       Entrada: idPago
-       Salida: estatus, fecha, monto
-       Equipo responsable: Pagos
-     [intención: detalle_servicio | esperada: detalle_servicio | OK]
+Bot: Servicios del dominio pagos:
+       - SRV-029 Consulta pagos realizados o pendientes por el cliente autorizado [GET /pagos]
+       - SRV-030 Ejecuta el pago de un servicio o convenio desde una cuenta autorizada [POST /pagos]
+       - SRV-031 Consulta los proveedores y convenios de pago habilitados para el banco [GET /pagos/convenios]
+       - SRV-032 Consulta las reglas de captura y validación que aplica un convenio… [GET /pagos/convenios/{idConvenio}]
+       - SRV-033 Consulta el estado [GET /pagos/{idPago}]
+     [intención: listar_por_dominio | esperada: listar_por_dominio | servicio: GET /pagos | esperado: GET /pagos | OK]
+Tú : Detalle de SRV-026
+Bot: SRV-026 - Consulta el estado (dominio transferencias)
+       Método/endpoint: GET /transferencias/{idTransferencia}
+       URL: https://banfake.mx/v1/transferencias/{idTransferencia}
+       Descripción: Consulta el estado, los datos principales y el resultado de una transferencia.
+       Recurso: Orden de transferencia individual y su resultado de procesamiento.
+       Entrada: Ruta: idTransferencia: string
+       Salida: 200 {idTransferencia: string, importe: Dinero, estado: EstadoTransferencia, motivoRechazo?: string, fechaLiquidacion?: datetime} - Transferencia encontrada.
+       Controles: token Bearer en el encabezado Authorization
+     [intención: detalle_servicio | esperada: detalle_servicio | servicio: GET /transferencias/{idTransferencia} | esperado: GET /transferencias/{idTransferencia} | OK]
 
 ===== C07 Consulta directa por ID =====
-Tú : srv-13
-Bot: SRV-013 - Creación de pedido (dominio Pedidos)
-       Método/endpoint: POST /api/v1/pedidos
-       Descripción: Crea un pedido a partir de un carrito de compra.
-       Entrada: idCliente, productos, direccionEntrega
-       Salida: idPedido, total
-       Equipo responsable: Comercio
-     [intención: detalle_servicio | esperada: detalle_servicio | OK]
-Tú : ¿Hay servicio para ver el historial de pedidos del cliente?
+Tú : srv-015
+Bot: SRV-015 - Consulta los datos operativos de una cuenta y su saldo disponible (dominio cuentas)
+       Método/endpoint: GET /cuentas/{idCuenta}
+       URL: https://banfake.mx/v1/cuentas/{idCuenta}
+       Descripción: Consulta los datos operativos de una cuenta y su saldo disponible.
+       Recurso: Cuenta bancaria individual con su saldo y estado operativo.
+       Entrada: Ruta: idCuenta: string
+       Salida: 200 Cuenta {idCuenta: string, idCliente: string, tipo: string (debito|ahorro|nomina|corriente), numeroEnmascarado: string, saldoDisponible: Dinero, estado: string (activa|bloqueada|cancelada|pendiente)} - Cuenta encontrada y visible para el solicitante.
+       Controles: token Bearer en el encabezado Authorization
+     [intención: detalle_servicio | esperada: detalle_servicio | servicio: GET /cuentas/{idCuenta} | esperado: GET /cuentas/{idCuenta} | OK]
+Tú : ¿Hay servicio para ver el historial de movimientos de la cuenta?
 Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
-       1) SRV-014 Historial de pedidos [GET /api/v1/clientes/{idCliente}/pedidos] - puntaje 2.33
-       2) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.0
-       3) SRV-013 Creación de pedido [POST /api/v1/pedidos] - puntaje 1.0
+       1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 17.43
      Escribe 'detalle del primero' o el ID para ver su contrato.
-     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: GET /cuentas/{idCuenta}/movimientos | esperado: GET /cuentas/{idCuenta}/movimientos | OK]
 
 ===== C08 Imagen de pantalla (fuera de v1) =====
 Tú : Te comparto la imagen del mockup de Figma
 Bot: El análisis de imágenes de pantallas aún no está disponible en esta versión. Se incorporará en el Avance 2 con clasificación de imágenes. Por ahora, describe en texto los elementos de la pantalla (campos, botones, acciones).
      [intención: analizar_imagen | esperada: analizar_imagen | OK]
-Tú : Pantalla con catálogo de productos, carrito de compra y pago con tarjeta
+Tú : Pantalla con resumen de cuentas, transferencia a un beneficiario y pago de servicios
 Bot: Analicé 3 necesidades funcionales. Cobertura: 100%.
-       [OK] 'catalogo de productos' -> SRV-012 Catálogo de productos (GET /api/v1/productos)
-       [OK] 'carrito de compra' -> SRV-013 Creación de pedido (POST /api/v1/pedidos)
-       [OK] 'pago con tarjeta' -> SRV-010 Registro de pago (POST /api/v1/pagos)
+       [OK] 'resumen de cuentas' -> SRV-007 Lista las cuentas bancarias asociadas al cliente (GET /clientes/{idCliente}/cuentas)
+       [OK] 'transferencia a un beneficiario' -> SRV-025 Ordena una transferencia entre cuentas propias o hacia otro banco (POST /transferencias)
+       [OK] 'pago de servicios' -> SRV-023 Registra un pago extraordinario o una mensualidad del préstamo y… (POST /prestamos/{idPrestamo}/pagos)
      [intención: analizar_requerimiento | esperada: analizar_requerimiento | OK]
 
 ===== C09 Sin palabra disparadora =====
-Tú : transacciones de la cuenta del último mes
+Tú : movimientos de la cuenta del último mes
 Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
-       1) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 2.67
+       1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 12.39
      Escribe 'detalle del primero' o el ID para ver su contrato.
-     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: GET /cuentas/{idCuenta}/movimientos | esperado: GET /cuentas/{idCuenta}/movimientos | OK]
 Tú : estado de cuenta en pdf
 Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
-       1) SRV-009 Estado de cuenta [GET /api/v1/cuentas/{idCuenta}/estado-cuenta] - puntaje 2.67
+       1) SRV-018 Solicita generar un estado de cuenta para un periodo específico [POST /cuentas/{idCuenta}/estado-cuenta] - puntaje 6.96
+       2) SRV-007 Lista las cuentas bancarias asociadas al cliente [GET /clientes/{idCliente}/cuentas] - puntaje 4.31
+       3) SRV-013 Consulta cuentas disponibles para el usuario autorizado y permite… [GET /cuentas] - puntaje 4.31
      Escribe 'detalle del primero' o el ID para ver su contrato.
-     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: POST /cuentas/{idCuenta}/estado-cuenta | esperado: POST /cuentas/{idCuenta}/estado-cuenta | OK]
 
 ===== C10 Fuera de alcance =====
 Tú : ¿Cuál es el clima en Monterrey?
@@ -162,28 +179,112 @@ Bot: Puedo ayudarte a:
        5) Orientarte cuando exista una brecha (funcionalidad sin servicio).
      [intención: charla | esperada: charla | OK]
 
-===== C11 Documentos y notificaciones =====
-Tú : Necesito subir la identificación del cliente y avisarle por SMS
+===== C11 Comprobantes y beneficiarios =====
+Tú : Necesito generar el comprobante de una transferencia
 Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
-       1) SRV-017 Carga de documentos [POST /api/v1/documentos] - puntaje 2.17
-       2) SRV-015 Envío de notificaciones [POST /api/v1/notificaciones] - puntaje 2.0
-       3) SRV-008 Consulta de movimientos [GET /api/v1/cuentas/{idCuenta}/movimientos] - puntaje 1.0
+       1) SRV-028 Solicita generar un comprobante de la transferencia para descarga… [POST /transferencias/{idTransferencia}/comprobante] - puntaje 14.66
+       2) SRV-054 Solicita la generación asíncrona de un documento bancario a partir de… [POST /documentos] - puntaje 5.79
+       3) SRV-053 Consulta documentos generados para el usuario autorizado [GET /documentos] - puntaje 4.79
      Escribe 'detalle del primero' o el ID para ver su contrato.
-     [intención: buscar_servicio | esperada: buscar_servicio | OK]
-Tú : Formulario para adjuntar comprobante de domicilio y actualizar el teléfono del cliente
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: POST /transferencias/{idTransferencia}/comprobante | esperado: POST /transferencias/{idTransferencia}/comprobante | OK]
+Tú : Formulario para registrar un beneficiario con su límite diario y correo de notificación
 Bot: Analicé 2 necesidades funcionales. Cobertura: 100%.
-       [OK] 'adjuntar comprobante de domicilio' -> SRV-017 Carga de documentos (POST /api/v1/documentos)
-       [OK] 'actualizar el telefono del cliente' -> SRV-006 Actualización de datos de contacto (PATCH /api/v1/clientes/{idCliente}/contacto)
+       [OK] 'registrar un beneficiario con su limite diario' -> SRV-009 Registra un beneficiario nuevo (POST /clientes/{idCliente}/beneficiarios)
+       [OK] 'correo de notificacion' -> SRV-009 Registra un beneficiario nuevo (POST /clientes/{idCliente}/beneficiarios)
      [intención: analizar_requerimiento | esperada: analizar_requerimiento | OK]
 
 ===== C12 Cierre de sesión y despedida =====
 Tú : ¿Existe un endpoint de logout?
 Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
-       1) SRV-002 Cierre de sesión [POST /api/v1/auth/logout] - puntaje 2.0
+       1) SRV-046 Revoca la sesión indicada para impedir que sus tokens sigan… [DELETE /autenticacion/sesiones/{idSesion}] - puntaje 3.35
+       2) SRV-047 Emite un nuevo token de acceso a partir de un token de renovación… [POST /autenticacion/renovacion] - puntaje 3.35
      Escribe 'detalle del primero' o el ID para ver su contrato.
-     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: DELETE /autenticacion/sesiones/{idSesion} | esperado: DELETE /autenticacion/sesiones/{idSesion} | OK]
 Tú : Adiós
 Bot: ¡Hasta luego! Recuerda reutilizar antes de construir.
      [intención: charla | esperada: charla | OK]
 
-Precisión de intenciones: 27/27 = 100.0%
+===== C13 Fuera de dominio con palabra disparadora =====
+Tú : ¿Qué ropa uso para mañana?
+Bot: No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos.
+     [intención: fuera_de_alcance | esperada: fuera_de_alcance | OK]
+
+===== C14 Charla seguida de una petición =====
+Tú : Perfecto, ahora necesito un servicio para consultar movimientos
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 12.51
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: GET /cuentas/{idCuenta}/movimientos | esperado: GET /cuentas/{idCuenta}/movimientos | OK]
+
+===== C15 Búsqueda que menciona el inventario =====
+Tú : ¿Existe en el inventario un servicio para consultar el saldo?
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-015 Consulta los datos operativos de una cuenta y su saldo disponible [GET /cuentas/{idCuenta}] - puntaje 4.67
+       2) SRV-021 Consulta el estado [GET /prestamos/{idPrestamo}] - puntaje 4.67
+       3) SRV-053 Consulta documentos generados para el usuario autorizado [GET /documentos] - puntaje 4.67
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: GET /cuentas/{idCuenta} | esperado: GET /cuentas/{idCuenta} | OK]
+
+===== C16 Detalle de un servicio nombrado tras una búsqueda =====
+Tú : servicio para consultar movimientos
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 12.51
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: GET /cuentas/{idCuenta}/movimientos | esperado: GET /cuentas/{idCuenta}/movimientos | OK]
+Tú : dame el contrato del servicio de cancelación de seguros
+Bot: SRV-043 - Solicita cancelar una póliza vigente (dominio seguros)
+       Método/endpoint: POST /seguros/{idSeguro}/cancelacion
+       URL: https://banfake.mx/v1/seguros/{idSeguro}/cancelacion
+       Descripción: Solicita cancelar una póliza vigente; el banco calcula la fecha efectiva y, cuando aplica, la prima no devengada que se reembolsará.
+       Recurso: Solicitud del cliente para dar por terminada una póliza vigente.
+       Entrada: Ruta: idSeguro: string; Encabezados: X-Clave-Idempotencia (obligatorio), X-Factor-Confirmacion (obligatorio); Cuerpo: {motivo: string (solicitud_cliente|cambio_aseguradora|venta_bien_asegurado|otro), comentario?: string, fechaEfectivaSolicitada?: date-only}
+       Salida: 202 {idSeguro: string, estadoSolicitud: string (recibida|aplicada), fechaEfectiva: date-only, reembolso?: Dinero} - Solicitud de cancelación recibida para validación.
+       Controles: token Bearer en el encabezado Authorization; idempotencia (encabezado X-Clave-Idempotencia); segundo factor (encabezado X-Factor-Confirmacion)
+     [intención: detalle_servicio | esperada: detalle_servicio | servicio: POST /seguros/{idSeguro}/cancelacion | esperado: POST /seguros/{idSeguro}/cancelacion | OK]
+
+===== C17 Dominio que aparece junto a otro =====
+Tú : servicios de seguros para clientes
+Bot: Servicios del dominio seguros:
+       - SRV-039 Consulta pólizas y cotizaciones de seguros asociadas a un cliente [GET /seguros]
+       - SRV-040 Genera una cotización de seguro para el cliente según el tipo de… [POST /seguros]
+       - SRV-041 Consulta cobertura [GET /seguros/{idSeguro}]
+       - SRV-042 Acepta una cotización y solicita emitir la póliza después de validar… [POST /seguros/{idSeguro}/contratacion]
+       - SRV-043 Solicita cancelar una póliza vigente [POST /seguros/{idSeguro}/cancelacion]
+       - SRV-044 Solicita generar la carátula o certificado de la póliza para consulta… [POST /seguros/{idSeguro}/documento]
+     [intención: listar_por_dominio | esperada: listar_por_dominio | servicio: GET /seguros | esperado: GET /seguros | OK]
+
+===== C18 Requerimiento que contiene 'no existe' =====
+Tú : servicio para validar que el cliente no existe antes de darlo de alta
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-014 Abre una cuenta bancaria después de validar identidad [POST /cuentas] - puntaje 6.18
+       2) SRV-002 Registra un cliente nuevo y crea su expediente básico para iniciar la… [POST /clientes] - puntaje 5.93
+       3) SRV-042 Acepta una cotización y solicita emitir la póliza después de validar… [POST /seguros/{idSeguro}/contratacion] - puntaje 5.36
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+
+===== C19 Búsqueda sin resultados tras una recomendación =====
+Tú : servicio para consultar movimientos
+Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
+       1) SRV-017 Consulta el historial de cargos [GET /cuentas/{idCuenta}/movimientos] - puntaje 12.51
+     Escribe 'detalle del primero' o el ID para ver su contrato.
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: GET /cuentas/{idCuenta}/movimientos | esperado: GET /cuentas/{idCuenta}/movimientos | OK]
+Tú : necesito un servicio para invertir en fondos
+Bot: No encontré un servicio que cubra esa funcionalidad. 
+       1) Reformular con otros términos o revisar servicios similares.
+       2) Verificar si un servicio existente puede extenderse.
+       3) Registrar la brecha con el equipo de arquitectura para evaluar un servicio nuevo.
+     [intención: buscar_servicio | esperada: buscar_servicio | servicio: sin servicio | esperado: sin servicio | OK]
+Tú : detalle del primero
+Bot: SRV-017 - Consulta el historial de cargos (dominio cuentas)
+       Método/endpoint: GET /cuentas/{idCuenta}/movimientos
+       URL: https://banfake.mx/v1/cuentas/{idCuenta}/movimientos
+       Descripción: Consulta el historial de cargos, abonos, retenciones y liberaciones de la cuenta.
+       Recurso: Historial contable de la cuenta que permite al cliente conciliar cargos y abonos.
+       Entrada: Ruta: idCuenta: string; Consulta: pageSize?: integer, paginationKey?: string, desde?: date-only, hasta?: date-only, tipo?: string (abono|cargo|retencion|liberacion)
+       Salida: 200 PaginaResultado {paginationKey?: string, elementos: Movimiento[]} - Movimientos encontrados para el periodo solicitado.
+       Controles: token Bearer en el encabezado Authorization
+     [intención: detalle_servicio | esperada: detalle_servicio | servicio: GET /cuentas/{idCuenta}/movimientos | esperado: GET /cuentas/{idCuenta}/movimientos | OK]
+
+Intenciones correctas: 37/37 = 100.0%
+Servicios correctos: 21/21
+Turnos correctos (intención y servicio): 37/37

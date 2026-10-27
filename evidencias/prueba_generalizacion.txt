@@ -1,11 +1,41 @@
-OK    | quiero saber cuánto dinero tiene el cliente   | esperado=SRV-007 | obtenido=SRV-007
-OK    | cambiar el correo electrónico del cliente     | esperado=SRV-006 | obtenido=SRV-006
-FALLA | cancelar un pedido                            | esperado=None | obtenido=SRV-013
-OK    | solicitar un reembolso                        | esperado=None | obtenido=None
-OK    | ver las compras que hizo el cliente           | esperado=SRV-014 | obtenido=SRV-014
-OK    | dar de baja a un cliente                      | esperado=None | obtenido=None
-FALLA | recuperar contraseña olvidada                 | esperado=None | obtenido=SRV-001
-OK    | enviar una alerta push                        | esperado=SRV-015 | obtenido=SRV-015
-OK    | precio de un artículo                         | esperado=SRV-012 | obtenido=SRV-012
-FALLA | descargar el comprobante del pago             | esperado=None | obtenido=SRV-009
-Aciertos en generalización: 7/10
+===== Ajuste =====
+FALLA | quiero saber cuánto dinero tengo disponible        | esperado=GET /cuentas/{idCuenta} | obtenido=None
+OK    | cambiar mi correo electrónico                      | esperado=PATCH /clientes/{idCliente} | obtenido=PATCH /clientes/{idCliente}
+OK    | mandar dinero a otro banco                         | esperado=POST /transferencias | obtenido=POST /transferencias
+FALLA | ver cuánto debo de mi crédito                      | esperado=GET /prestamos/{idPrestamo} | obtenido=None
+OK    | tabla de mensualidades del préstamo                | esperado=GET /prestamos/{idPrestamo}/amortizacion | obtenido=GET /prestamos/{idPrestamo}/amortizacion
+FALLA | agregar un contacto frecuente para enviar dinero   | esperado=POST /clientes/{idCliente}/beneficiarios | obtenido=POST /criptografia/cifrados
+FALLA | pagar el recibo de luz                             | esperado=POST /pagos | obtenido=None
+OK    | cancelar mi póliza de seguro                       | esperado=POST /seguros/{idSeguro}/cancelacion | obtenido=POST /seguros/{idSeguro}/cancelacion
+OK    | bloquear mi tarjeta de crédito                     | esperado=None | obtenido=None
+FALLA | consultar el tipo de cambio del dólar              | esperado=None | obtenido=GET /cuentas/{idCuenta}/movimientos
+OK    | Servicio para registrar un cliente                 | esperado=POST /clientes | obtenido=POST /clientes
+OK    | dar de alta a un nuevo cliente en el banco         | esperado=POST /clientes | obtenido=POST /clientes
+Aciertos ajuste: 7/12
+
+===== Validación =====
+FALLA | buscar clientes por nombre                         | esperado=GET /clientes | obtenido=POST /clientes
+OK    | actualizar el teléfono del cliente                 | esperado=PATCH /clientes/{idCliente} | obtenido=PATCH /clientes/{idCliente}
+OK    | qué cuentas tiene el cliente                       | esperado=GET /clientes/{idCliente}/cuentas | obtenido=GET /clientes/{idCliente}/cuentas
+OK    | borrar un beneficiario que ya no uso               | esperado=DELETE /clientes/{idCliente}/beneficiarios/{idBeneficiario} | obtenido=DELETE /clientes/{idCliente}/beneficiarios/{idBeneficiario}
+OK    | abrir una cuenta de ahorro                         | esperado=POST /cuentas | obtenido=POST /cuentas
+FALLA | congelar una cuenta por robo                       | esperado=PATCH /cuentas/{idCuenta} | obtenido=None
+FALLA | pedir el estado de cuenta del mes pasado           | esperado=POST /cuentas/{idCuenta}/estado-cuenta | obtenido=POST /prestamos
+OK    | solicitar un préstamo personal                     | esperado=POST /prestamos | obtenido=POST /prestamos
+OK    | adelantar un pago a mi préstamo                    | esperado=POST /prestamos/{idPrestamo}/pagos | obtenido=POST /prestamos/{idPrestamo}/pagos
+FALLA | revisar si mi transferencia ya llegó               | esperado=GET /transferencias/{idTransferencia} | obtenido=GET /transferencias
+FALLA | anular una transferencia que hice por error        | esperado=POST /transferencias/{idTransferencia}/cancelacion | obtenido=None
+OK    | obtener el comprobante de la transferencia en pdf  | esperado=POST /transferencias/{idTransferencia}/comprobante | obtenido=POST /transferencias/{idTransferencia}/comprobante
+FALLA | lista de empresas a las que puedo pagar            | esperado=GET /pagos/convenios | obtenido=GET /pagos
+FALLA | pedir un crédito para comprar casa                 | esperado=POST /hipotecas | obtenido=POST /prestamos
+OK    | subir la escritura de la casa para la hipoteca     | esperado=POST /hipotecas/{idHipoteca}/documentos | obtenido=POST /hipotecas/{idHipoteca}/documentos
+OK    | cotizar un seguro de auto                          | esperado=POST /seguros | obtenido=POST /seguros
+OK    | contratar el seguro que coticé                     | esperado=POST /seguros/{idSeguro}/contratacion | obtenido=POST /seguros/{idSeguro}/contratacion
+OK    | iniciar sesión con usuario y contraseña            | esperado=POST /autenticacion/sesiones | obtenido=POST /autenticacion/sesiones
+OK    | validar el código que llega por SMS                | esperado=POST /autenticacion/verificacion-segundo-factor | obtenido=POST /autenticacion/verificacion-segundo-factor
+FALLA | encriptar el número de tarjeta                     | esperado=POST /criptografia/cifrados | obtenido=None
+OK    | invertir en un fondo de inversión                  | esperado=None | obtenido=None
+OK    | solicitar una chequera                             | esperado=None | obtenido=None
+OK    | consultar los puntos de recompensa de mi tarjeta   | esperado=None | obtenido=None
+OK    | programar un retiro sin tarjeta en cajero          | esperado=None | obtenido=None
+Aciertos validación: 16/24
