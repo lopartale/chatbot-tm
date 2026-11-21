@@ -1,0 +1,168 @@
+{
+  "M01 Anuncia la imagen y luego la envía": [
+    {
+      "mensaje": "Te comparto el mockup de la pantalla",
+      "imagen": null,
+      "respuesta": "Para analizar una pantalla necesito la imagen. En la terminal escribe '/imagen <ruta del archivo>'; en Colab usa bot.responder(texto, imagen='ruta.png'). También puedes describir en texto los campos y acciones de la pantalla.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": null,
+      "pantalla_obtenida": null,
+      "confianza": null,
+      "correcto": true
+    },
+    {
+      "mensaje": "Aquí está",
+      "imagen": "prueba/transferencia/transferencia_003.jpg",
+      "respuesta": "La imagen parece una pantalla de transferencia (confianza 100%; dominio transferencias).\nOperaciones típicas de esta pantalla: 4. Cobertura en el inventario: 100%.\n  [OK] Elegir la cuenta de origen -> SRV-013 GET /cuentas\n  [OK] Elegir un beneficiario -> SRV-008 GET /clientes/{idCliente}/beneficiarios\n  [OK] Ordenar la transferencia -> SRV-025 POST /transferencias\n  [OK] Generar el comprobante -> SRV-028 POST /transferencias/{idTransferencia}/comprobante\nEstas operaciones son las habituales para este tipo de pantalla; la imagen no se lee campo por campo. Si tu pantalla tiene funciones adicionales, descríbelas en texto.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": "transferencia",
+      "pantalla_obtenida": "transferencia",
+      "confianza": 1.0,
+      "correcto": true
+    },
+    {
+      "mensaje": "dame el contrato del tercero",
+      "imagen": null,
+      "respuesta": "SRV-025 - Ordena una transferencia entre cuentas propias o hacia otro banco (dominio transferencias)\n  Método/endpoint: POST /transferencias\n  URL: https://banfake.mx/v1/transferencias\n  Descripción: Ordena una transferencia entre cuentas propias o hacia otro banco, sujeta a saldo, límites y controles antifraude.\n  Recurso: Órdenes para mover dinero entre cuentas del banco o hacia otros bancos.\n  Entrada: Encabezados: X-Clave-Idempotencia (obligatorio), X-Factor-Confirmacion (obligatorio); Cuerpo: Transferencia {idCuentaOrigen: string, cuentaBeneficiaria: string, bancoDestino?: string, importe: ImportePositivo, concepto: string, referencia?: string, fechaEjecucion?: date-only, idBeneficiario?: string}\n  Salida: 202 {idTransferencia: string, estado: EstadoTransferencia (recibida|en_validacion|programada), fechaRecepcion: datetime} - La orden fue aceptada para procesamiento; la aceptación no garantiza liquidación final.\n  Controles: token Bearer en el encabezado Authorization; idempotencia (encabezado X-Clave-Idempotencia); segundo factor (encabezado X-Factor-Confirmacion)",
+      "intencion_esperada": "detalle_servicio",
+      "intencion_obtenida": "detalle_servicio",
+      "pantalla_esperada": null,
+      "pantalla_obtenida": null,
+      "confianza": null,
+      "correcto": true
+    }
+  ],
+  "M02 Captura de login y pregunta de seguimiento": [
+    {
+      "mensaje": "¿Qué servicios necesita esta pantalla?",
+      "imagen": "prueba/login/login_002.jpg",
+      "respuesta": "La imagen parece una pantalla de inicio de sesión (confianza 100%; dominio autenticacion).\nOperaciones típicas de esta pantalla: 3. Cobertura en el inventario: 100%.\n  [OK] Iniciar sesión con usuario y contraseña -> SRV-045 POST /autenticacion/sesiones\n  [OK] Verificar el código de segundo factor -> SRV-048 POST /autenticacion/verificacion-segundo-factor\n  [OK] Cerrar sesión -> SRV-046 DELETE /autenticacion/sesiones/{idSesion}\nEstas operaciones son las habituales para este tipo de pantalla; la imagen no se lee campo por campo. Si tu pantalla tiene funciones adicionales, descríbelas en texto.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": "login",
+      "pantalla_obtenida": "login",
+      "confianza": 0.999,
+      "correcto": true
+    },
+    {
+      "mensaje": "¿Qué hago si necesito recuperar la contraseña y no existe el servicio?",
+      "imagen": null,
+      "respuesta": "Cuando una funcionalidad no tiene servicio (brecha), te sugiero: \n  1) Reformular con otros términos o revisar servicios similares.\n  2) Verificar si un servicio existente puede extenderse.\n  3) Registrar la brecha con el equipo de arquitectura para evaluar un servicio nuevo.",
+      "intencion_esperada": "reportar_brecha",
+      "intencion_obtenida": "reportar_brecha",
+      "pantalla_esperada": null,
+      "pantalla_obtenida": null,
+      "confianza": null,
+      "correcto": true
+    }
+  ],
+  "M03 Maqueta del front de pagos": [
+    {
+      "mensaje": "Revisa el front de pagos",
+      "imagen": "prueba/pago_servicios/pago_servicios_000.jpg",
+      "respuesta": "La imagen parece una pantalla de pago de servicios (confianza 100%; dominio pagos).\nOperaciones típicas de esta pantalla: 4. Cobertura en el inventario: 100%.\n  [OK] Listar los convenios de pago -> SRV-031 GET /pagos/convenios\n  [OK] Validar la referencia según el convenio -> SRV-032 GET /pagos/convenios/{idConvenio}\n  [OK] Pagar el servicio -> SRV-030 POST /pagos\n  [OK] Mostrar los pagos recientes -> SRV-029 GET /pagos\nEstas operaciones son las habituales para este tipo de pantalla; la imagen no se lee campo por campo. Si tu pantalla tiene funciones adicionales, descríbelas en texto.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": "pago_servicios",
+      "pantalla_obtenida": "pago_servicios",
+      "confianza": 1.0,
+      "correcto": true
+    },
+    {
+      "mensaje": "detalle del primero",
+      "imagen": null,
+      "respuesta": "SRV-031 - Consulta los proveedores y convenios de pago habilitados para el banco (dominio pagos)\n  Método/endpoint: GET /pagos/convenios\n  URL: https://banfake.mx/v1/pagos/convenios\n  Descripción: Consulta los proveedores y convenios de pago habilitados para el banco.\n  Recurso: Catálogo de proveedores y servicios que el banco permite pagar.\n  Entrada: Consulta: pageSize?: integer, paginationKey?: string, categoria?: string, texto?: string\n  Salida: 200 PaginaResultado {paginationKey?: string, elementos: {idConvenio: string, nombre: string, categoria: string, requiereReferencia: boolean, permiteMontoLibre: boolean}[]} - Convenios de pago encontrados.\n  Controles: token Bearer en el encabezado Authorization",
+      "intencion_esperada": "detalle_servicio",
+      "intencion_obtenida": "detalle_servicio",
+      "pantalla_esperada": null,
+      "pantalla_obtenida": null,
+      "confianza": null,
+      "correcto": true
+    }
+  ],
+  "M04 Boceto (estilo no visto) de seguros": [
+    {
+      "mensaje": "Clasifica este boceto",
+      "imagen": "estilo_nuevo/seguros/seguros_000.jpg",
+      "respuesta": "La imagen parece una pantalla de préstamo (confianza 46%; dominio prestamos).\nNo estoy seguro: también podría ser seguros (39%), pago de servicios (12%). Si es otra pantalla, descríbeme sus funciones en texto y la analizo.\nOperaciones típicas de esta pantalla: 4. Cobertura en el inventario: 100%.\n  [OK] Mostrar el préstamo y su saldo -> SRV-021 GET /prestamos/{idPrestamo}\n  [OK] Mostrar la tabla de amortización -> SRV-022 GET /prestamos/{idPrestamo}/amortizacion\n  [OK] Pagar una mensualidad -> SRV-023 POST /prestamos/{idPrestamo}/pagos\n  [OK] Solicitar un préstamo -> SRV-020 POST /prestamos\nEstas operaciones son las habituales para este tipo de pantalla; la imagen no se lee campo por campo. Si tu pantalla tiene funciones adicionales, descríbelas en texto.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": "seguros",
+      "pantalla_obtenida": "prestamo",
+      "confianza": 0.46,
+      "correcto": false
+    },
+    {
+      "mensaje": "Servicios de seguros",
+      "imagen": null,
+      "respuesta": "Servicios del dominio seguros:\n  - SRV-039 Consulta pólizas y cotizaciones de seguros asociadas a un cliente [GET /seguros]\n  - SRV-040 Genera una cotización de seguro para el cliente según el tipo de… [POST /seguros]\n  - SRV-041 Consulta cobertura [GET /seguros/{idSeguro}]\n  - SRV-042 Acepta una cotización y solicita emitir la póliza después de validar… [POST /seguros/{idSeguro}/contratacion]\n  - SRV-043 Solicita cancelar una póliza vigente [POST /seguros/{idSeguro}/cancelacion]\n  - SRV-044 Solicita generar la carátula o certificado de la póliza para consulta… [POST /seguros/{idSeguro}/documento]",
+      "intencion_esperada": "listar_por_dominio",
+      "intencion_obtenida": "listar_por_dominio",
+      "pantalla_esperada": null,
+      "pantalla_obtenida": null,
+      "confianza": null,
+      "correcto": true
+    }
+  ],
+  "M05 Boceto de carga de documentos y requerimiento en texto": [
+    {
+      "mensaje": "",
+      "imagen": "estilo_nuevo/documentos/documentos_001.jpg",
+      "respuesta": "La imagen parece una pantalla de carga de documentos (confianza 100%; dominio hipotecas).\nOperaciones típicas de esta pantalla: 3. Cobertura en el inventario: 100%.\n  [OK] Listar los documentos requeridos del expediente -> SRV-037 GET /hipotecas/{idHipoteca}/documentos\n  [OK] Registrar un documento aportado -> SRV-038 POST /hipotecas/{idHipoteca}/documentos\n  [OK] Mostrar el estado de la solicitud -> SRV-036 GET /hipotecas/{idHipoteca}\nEstas operaciones son las habituales para este tipo de pantalla; la imagen no se lee campo por campo. Si tu pantalla tiene funciones adicionales, descríbelas en texto.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": "documentos",
+      "pantalla_obtenida": "documentos",
+      "confianza": 0.998,
+      "correcto": true
+    },
+    {
+      "mensaje": "Además necesita consultar el estado de la solicitud de hipoteca y registrar al cliente",
+      "imagen": null,
+      "respuesta": "Analicé 2 necesidades funcionales. Cobertura: 100%.\n  [OK] 'ademas necesita consultar el estado de la solicitud de hipoteca' -> SRV-034 Consulta solicitudes y contratos hipotecarios de un cliente (GET /hipotecas)\n  [OK] 'registrar al cliente' -> SRV-002 Registra un cliente nuevo y crea su expediente básico para iniciar la… (POST /clientes)",
+      "intencion_esperada": "analizar_requerimiento",
+      "intencion_obtenida": "analizar_requerimiento",
+      "pantalla_esperada": null,
+      "pantalla_obtenida": null,
+      "confianza": null,
+      "correcto": true
+    }
+  ],
+  "M06 Varias pantallas en la misma sesión": [
+    {
+      "mensaje": "Pantalla 1",
+      "imagen": "prueba/cuentas/cuentas_001.jpg",
+      "respuesta": "La imagen parece una pantalla de resumen de cuentas y movimientos (confianza 100%; dominio cuentas).\nOperaciones típicas de esta pantalla: 4. Cobertura en el inventario: 100%.\n  [OK] Listar las cuentas del usuario -> SRV-013 GET /cuentas\n  [OK] Mostrar el saldo de una cuenta -> SRV-015 GET /cuentas/{idCuenta}\n  [OK] Mostrar los movimientos -> SRV-017 GET /cuentas/{idCuenta}/movimientos\n  [OK] Generar el estado de cuenta -> SRV-018 POST /cuentas/{idCuenta}/estado-cuenta\nEstas operaciones son las habituales para este tipo de pantalla; la imagen no se lee campo por campo. Si tu pantalla tiene funciones adicionales, descríbelas en texto.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": "cuentas",
+      "pantalla_obtenida": "cuentas",
+      "confianza": 0.999,
+      "correcto": true
+    },
+    {
+      "mensaje": "Pantalla 2",
+      "imagen": "prueba/prestamo/prestamo_000.jpg",
+      "respuesta": "La imagen parece una pantalla de préstamo (confianza 90%; dominio prestamos).\nOperaciones típicas de esta pantalla: 4. Cobertura en el inventario: 100%.\n  [OK] Mostrar el préstamo y su saldo -> SRV-021 GET /prestamos/{idPrestamo}\n  [OK] Mostrar la tabla de amortización -> SRV-022 GET /prestamos/{idPrestamo}/amortizacion\n  [OK] Pagar una mensualidad -> SRV-023 POST /prestamos/{idPrestamo}/pagos\n  [OK] Solicitar un préstamo -> SRV-020 POST /prestamos\nEstas operaciones son las habituales para este tipo de pantalla; la imagen no se lee campo por campo. Si tu pantalla tiene funciones adicionales, descríbelas en texto.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": "prestamo",
+      "pantalla_obtenida": "prestamo",
+      "confianza": 0.902,
+      "correcto": true
+    },
+    {
+      "mensaje": "Pantalla 3",
+      "imagen": "prueba/alta_cliente/alta_cliente_000.jpg",
+      "respuesta": "La imagen parece una pantalla de alta de cliente (confianza 100%; dominio clientes).\nOperaciones típicas de esta pantalla: 3. Cobertura en el inventario: 100%.\n  [OK] Registrar al cliente -> SRV-002 POST /clientes\n  [OK] Registrar el consentimiento de privacidad -> SRV-006 PUT /clientes/{idCliente}/consentimientos\n  [OK] Abrir su cuenta -> SRV-014 POST /cuentas\nEstas operaciones son las habituales para este tipo de pantalla; la imagen no se lee campo por campo. Si tu pantalla tiene funciones adicionales, descríbelas en texto.",
+      "intencion_esperada": "analizar_imagen",
+      "intencion_obtenida": "analizar_imagen",
+      "pantalla_esperada": "alta_cliente",
+      "pantalla_obtenida": "alta_cliente",
+      "confianza": 1.0,
+      "correcto": true
+    }
+  ]
+}
