@@ -1,0 +1,524 @@
+{
+  "parametros": {
+    "modelo": "LinearSVC",
+    "C": 1.0,
+    "ngramas": [
+      1,
+      2
+    ],
+    "random_state": 42
+  },
+  "entrenamiento": {
+    "accuracy": 1.0,
+    "precision_macro": 1.0,
+    "recall_macro": 1.0,
+    "f1_macro": 1.0
+  },
+  "prueba": {
+    "accuracy": 0.8571,
+    "precision_macro": 0.8559,
+    "recall_macro": 0.8571,
+    "f1_macro": 0.8553
+  },
+  "prueba_por_tipo": {
+    "dificil": {
+      "accuracy": 0.6667,
+      "precision_macro": 0.6407,
+      "recall_macro": 0.6376,
+      "f1_macro": 0.6226
+    },
+    "normal": {
+      "accuracy": 0.9167,
+      "precision_macro": 0.9053,
+      "recall_macro": 0.9076,
+      "f1_macro": 0.9051
+    }
+  },
+  "svm_unigramas": {
+    "accuracy": 0.873,
+    "precision_macro": 0.8738,
+    "recall_macro": 0.873,
+    "f1_macro": 0.8703
+  },
+  "asistente_integrado": {
+    "accuracy": 0.8889,
+    "precision_macro": 0.892,
+    "recall_macro": 0.8889,
+    "f1_macro": 0.8874
+  },
+  "asistente_integrado_por_tipo": {
+    "dificil": {
+      "accuracy": 0.7333,
+      "precision_macro": 0.6833,
+      "recall_macro": 0.7302,
+      "f1_macro": 0.6971
+    },
+    "normal": {
+      "accuracy": 0.9375,
+      "precision_macro": 0.9322,
+      "recall_macro": 0.9278,
+      "f1_macro": 0.9284
+    }
+  },
+  "regresion_avance1": {
+    "aciertos": 34,
+    "total": 37
+  },
+  "matriz_confusion": {
+    "etiquetas": [
+      "charla",
+      "buscar_servicio",
+      "analizar_requerimiento",
+      "detalle_servicio",
+      "listar_dominios",
+      "listar_por_dominio",
+      "reportar_brecha",
+      "analizar_imagen",
+      "fuera_de_alcance"
+    ],
+    "valores": [
+      [
+        12,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        8,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        4
+      ],
+      [
+        0,
+        2,
+        12,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        14,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        13,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        0,
+        0,
+        12,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        14,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        14,
+        0
+      ],
+      [
+        1,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        9
+      ]
+    ]
+  },
+  "errores": [
+    {
+      "texto": "¿qué opciones tengo contigo?",
+      "esperada": "charla",
+      "obtenida": "reportar_brecha",
+      "tipo": "normal",
+      "margen": 0.259,
+      "terminos_decisivos": [
+        [
+          "opcion",
+          0.172
+        ],
+        [
+          "que opcion",
+          0.172
+        ],
+        [
+          "que",
+          0.099
+        ]
+      ]
+    },
+    {
+      "texto": "hasta pronto",
+      "esperada": "charla",
+      "obtenida": "fuera_de_alcance",
+      "tipo": "normal",
+      "margen": 0.026,
+      "terminos_decisivos": []
+    },
+    {
+      "texto": "subir la imagen de la firma del cliente",
+      "esperada": "buscar_servicio",
+      "obtenida": "analizar_imagen",
+      "tipo": "dificil",
+      "margen": 0.821,
+      "terminos_decisivos": [
+        [
+          "imag",
+          0.957
+        ],
+        [
+          "sub imag",
+          0.312
+        ],
+        [
+          "sub",
+          0.068
+        ]
+      ]
+    },
+    {
+      "texto": "servicio para contratar una póliza",
+      "esperada": "buscar_servicio",
+      "obtenida": "detalle_servicio",
+      "tipo": "normal",
+      "margen": 0.963,
+      "terminos_decisivos": [
+        [
+          "contrat",
+          0.901
+        ],
+        [
+          "servici",
+          0.17
+        ],
+        [
+          "poliz",
+          -0.005
+        ]
+      ]
+    },
+    {
+      "texto": "registrar una transferencia programada",
+      "esperada": "buscar_servicio",
+      "obtenida": "fuera_de_alcance",
+      "tipo": "normal",
+      "margen": 0.297,
+      "terminos_decisivos": [
+        [
+          "program",
+          0.617
+        ],
+        [
+          "registr",
+          0.021
+        ],
+        [
+          "transferent",
+          -0.16
+        ]
+      ]
+    },
+    {
+      "texto": "necesito un servicio para abrir una inversión",
+      "esperada": "buscar_servicio",
+      "obtenida": "fuera_de_alcance",
+      "tipo": "dificil",
+      "margen": 0.511,
+      "terminos_decisivos": [
+        [
+          "necesit",
+          0.392
+        ],
+        [
+          "necesit servici",
+          0.245
+        ],
+        [
+          "abrir",
+          0.164
+        ]
+      ]
+    },
+    {
+      "texto": "validar el código de verificación",
+      "esperada": "buscar_servicio",
+      "obtenida": "fuera_de_alcance",
+      "tipo": "normal",
+      "margen": 0.28,
+      "terminos_decisivos": [
+        [
+          "codig",
+          0.211
+        ],
+        [
+          "verif",
+          0.203
+        ],
+        [
+          "valid",
+          -0.016
+        ]
+      ]
+    },
+    {
+      "texto": "necesito un servicio de notificaciones push",
+      "esperada": "buscar_servicio",
+      "obtenida": "fuera_de_alcance",
+      "tipo": "dificil",
+      "margen": 0.461,
+      "terminos_decisivos": [
+        [
+          "necesit",
+          0.375
+        ],
+        [
+          "necesit servici",
+          0.235
+        ],
+        [
+          "notif",
+          -0.022
+        ]
+      ]
+    },
+    {
+      "texto": "pantalla de captura de solicitud de hipoteca con carga de documentos",
+      "esperada": "analizar_requerimiento",
+      "obtenida": "buscar_servicio",
+      "tipo": "dificil",
+      "margen": 0.247,
+      "terminos_decisivos": [
+        [
+          "carg document",
+          0.259
+        ],
+        [
+          "solicitud hipotec",
+          0.222
+        ],
+        [
+          "carg",
+          0.177
+        ]
+      ]
+    },
+    {
+      "texto": "módulo de sesión: iniciar sesión, verificar código y cerrar sesión",
+      "esperada": "analizar_requerimiento",
+      "obtenida": "buscar_servicio",
+      "tipo": "normal",
+      "margen": 0.341,
+      "terminos_decisivos": [
+        [
+          "sesion",
+          0.542
+        ],
+        [
+          "verific",
+          0.172
+        ],
+        [
+          "verific codig",
+          0.172
+        ]
+      ]
+    },
+    {
+      "texto": "¿qué tienes?",
+      "esperada": "listar_dominios",
+      "obtenida": "listar_por_dominio",
+      "tipo": "dificil",
+      "margen": 0.084,
+      "terminos_decisivos": [
+        [
+          "que tien",
+          0.546
+        ],
+        [
+          "tien",
+          0.305
+        ],
+        [
+          "que",
+          -0.001
+        ]
+      ]
+    },
+    {
+      "texto": "¿y los de hipotecas?",
+      "esperada": "listar_por_dominio",
+      "obtenida": "analizar_requerimiento",
+      "tipo": "dificil",
+      "margen": 0.98,
+      "terminos_decisivos": [
+        [
+          "y",
+          1.824
+        ],
+        [
+          "hipotec",
+          0.187
+        ]
+      ]
+    },
+    {
+      "texto": "¿y los de documentos?",
+      "esperada": "listar_por_dominio",
+      "obtenida": "analizar_requerimiento",
+      "tipo": "dificil",
+      "margen": 0.753,
+      "terminos_decisivos": [
+        [
+          "y",
+          1.785
+        ],
+        [
+          "document",
+          0.046
+        ]
+      ]
+    },
+    {
+      "texto": "¿qué temperatura hace?",
+      "esperada": "fuera_de_alcance",
+      "obtenida": "charla",
+      "tipo": "normal",
+      "margen": 0.799,
+      "terminos_decisivos": [
+        [
+          "hac",
+          0.685
+        ],
+        [
+          "que",
+          -0.01
+        ]
+      ]
+    },
+    {
+      "texto": "¿hay concierto este fin?",
+      "esperada": "fuera_de_alcance",
+      "obtenida": "analizar_imagen",
+      "tipo": "dificil",
+      "margen": 0.517,
+      "terminos_decisivos": [
+        [
+          "este",
+          0.867
+        ],
+        [
+          "hay",
+          -0.16
+        ]
+      ]
+    },
+    {
+      "texto": "¿me conviene pedir un crédito hipotecario?",
+      "esperada": "fuera_de_alcance",
+      "obtenida": "buscar_servicio",
+      "tipo": "dificil",
+      "margen": 0.249,
+      "terminos_decisivos": [
+        [
+          "ped credit",
+          0.355
+        ],
+        [
+          "credit",
+          0.194
+        ],
+        [
+          "ped",
+          0.148
+        ]
+      ]
+    },
+    {
+      "texto": "escribe el código de una API en Python",
+      "esperada": "fuera_de_alcance",
+      "obtenida": "buscar_servicio",
+      "tipo": "dificil",
+      "margen": 0.865,
+      "terminos_decisivos": [
+        [
+          "api",
+          0.821
+        ],
+        [
+          "codig",
+          0.22
+        ]
+      ]
+    },
+    {
+      "texto": "¿existe vida en Marte?",
+      "esperada": "fuera_de_alcance",
+      "obtenida": "buscar_servicio",
+      "tipo": "normal",
+      "margen": 0.502,
+      "terminos_decisivos": [
+        [
+          "vid",
+          0.553
+        ],
+        [
+          "exist",
+          0.198
+        ]
+      ]
+    }
+  ]
+}

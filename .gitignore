@@ -3,3 +3,8 @@ __pycache__/
 .ipynb_checkpoints/
 .DS_Store
 .pytest_cache/
+
+# Avance 2: archivos grandes que se regeneran con los scripts
+modelos/*.onnx
+data/imagenes/
+evidencias/caracteristicas_*.npz

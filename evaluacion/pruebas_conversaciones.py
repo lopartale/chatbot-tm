@@ -5,22 +5,25 @@ Las pruebas se refieren a los servicios por "MÉTODO /endpoint" y no por su ID,
 porque los IDs (SRV-001, SRV-002...) se asignan según el orden del RAML y cambian
 si se agregan o se reordenan recursos.
 
-Se ejecutan con test_chatbot.py, que además guarda el reporte completo en evidencias/:
+Las verifica tests/test_chatbot.py; la transcripción, los resultados y la prueba de
+generalización se guardan en evidencias/ al ejecutar este módulo:
 
-    python -m pytest test_chatbot.py
+    python -m pytest tests/test_chatbot.py           # verificación
+    python -m evaluacion.pruebas_conversaciones      # evidencias
 """
-import json
 import re
-from pathlib import Path
 
-from chatbot_servicios import RUTA_INVENTARIO, AsistenteServiciosREST
-from inventario_raml import cargar_inventario_raml
+from asistente.chatbot_servicios import RUTA_INVENTARIO, AsistenteServiciosREST
+from conocimiento.formato_respuestas import operacion_http
+from conocimiento.inventario_raml import cargar_inventario_raml
+from evaluacion.registro_evidencias import guardar_json, guardar_texto
 
 RUTA = RUTA_INVENTARIO
 
+# Traducción entre "MÉTODO /endpoint" (como se escriben las pruebas) y el ID del inventario
 _SERVICIOS = cargar_inventario_raml(RUTA)["servicios"]
-_ID_POR_OPERACION = {f"{s['metodo']} {s['endpoint']}": s["id"] for s in _SERVICIOS}
-_OPERACION_POR_ID = {sid: operacion for operacion, sid in _ID_POR_OPERACION.items()}
+_ID_POR_OPERACION = {operacion_http(servicio): servicio["id"] for servicio in _SERVICIOS}
+_OPERACION_POR_ID = {id_servicio: operacion for operacion, id_servicio in _ID_POR_OPERACION.items()}
 
 
 def id_de(operacion: str) -> str:
@@ -137,8 +140,8 @@ def operacion_obtenida(respuesta: str) -> str:
     Se lee del texto y no del contexto de la sesión: una búsqueda sin resultados conserva
     la recomendación del turno anterior y no debe contar como si la hubiera hecho.
     """
-    m = re.search(r"\bSRV-\d{3}\b", respuesta)
-    return _OPERACION_POR_ID[m.group()] if m else SIN_SERVICIO
+    primer_id = re.search(r"\bSRV-\d{3}\b", respuesta)
+    return _OPERACION_POR_ID[primer_id.group()] if primer_id else SIN_SERVICIO
 
 
 def evaluar_conversacion(turnos: list[tuple]) -> list[dict]:
@@ -146,9 +149,9 @@ def evaluar_conversacion(turnos: list[tuple]) -> list[dict]:
     bot = AsistenteServiciosREST(RUTA)
     resultados = []
     for mensaje, intencion_esperada, *operacion in turnos:
-        operacion_esperada = operacion[0] if operacion else None
+        operacion_esperada = operacion[0] if operacion else None   # el tercer elemento es opcional
         respuesta = bot.responder(mensaje)
-        intencion = bot.historial[-1]["intencion"]
+        intencion = bot.historial[-1]["intencion"]                  # intención final que registró el asistente
         obtenida = operacion_obtenida(respuesta) if operacion_esperada else None
         intencion_ok = intencion == intencion_esperada
         operacion_ok = obtenida == operacion_esperada
@@ -160,34 +163,41 @@ def evaluar_conversacion(turnos: list[tuple]) -> list[dict]:
     return resultados
 
 
-def ejecutar():
-    resultados, transcript = [], []
-    for nombre, turnos in CONVERSACIONES.items():
-        transcript.append(f"===== {nombre} =====")
-        for r in evaluar_conversacion(turnos):
-            resultados.append({"conversacion": nombre, **r})
-            transcript.append(f"Tú : {r['mensaje']}")
-            transcript.append("Bot: " + r["respuesta"].replace("\n", "\n     "))
-            verificacion = f"intención: {r['obtenida']} | esperada: {r['esperada']}"
-            if r["operacion_esperada"]:
-                verificacion += (f" | servicio: {r['operacion_obtenida']}"
-                                 f" | esperado: {r['operacion_esperada']}")
-            transcript.append(f"     [{verificacion} | {'OK' if r['correcto'] else 'FALLA'}]")
-        transcript.append("")
+def transcribir_turno(resultado: dict) -> list[str]:
+    """Líneas de la transcripción de un turno: mensaje, respuesta y verificación (OK o FALLA)."""
+    verificacion = f"intención: {resultado['obtenida']} | esperada: {resultado['esperada']}"
+    if resultado["operacion_esperada"]:
+        verificacion += (f" | servicio: {resultado['operacion_obtenida']}"
+                         f" | esperado: {resultado['operacion_esperada']}")
+    return [f"Tú : {resultado['mensaje']}",
+            "Bot: " + resultado["respuesta"].replace("\n", "\n     "),
+            f"     [{verificacion} | {'OK' if resultado['correcto'] else 'FALLA'}]"]
+
+
+def resumen_de_resultados(resultados: list[dict]) -> list[str]:
+    """Totales: intenciones, servicios y turnos correctos."""
     total = len(resultados)
-    intenciones = sum(r["intencion_ok"] for r in resultados)
-    con_servicio = [r for r in resultados if r["operacion_esperada"]]
-    servicios = sum(r["operacion_ok"] for r in con_servicio)
-    turnos_ok = sum(r["correcto"] for r in resultados)
-    transcript += [f"Intenciones correctas: {intenciones}/{total} = {100 * intenciones / total:.1f}%",
-                   f"Servicios correctos: {servicios}/{len(con_servicio)}",
-                   f"Turnos correctos (intención y servicio): {turnos_ok}/{total}"]
-    salida = Path(__file__).parent / "evidencias"
-    salida.mkdir(exist_ok=True)
-    (salida / "transcripcion_pruebas.txt").write_text("\n".join(transcript), encoding="utf-8")
-    (salida / "resultados_pruebas.json").write_text(json.dumps(resultados, ensure_ascii=False, indent=2),
-                                                     encoding="utf-8")
-    print("\n".join(transcript))
+    intenciones = sum(resultado["intencion_ok"] for resultado in resultados)
+    con_servicio = [resultado for resultado in resultados if resultado["operacion_esperada"]]
+    servicios = sum(resultado["operacion_ok"] for resultado in con_servicio)
+    turnos_correctos = sum(resultado["correcto"] for resultado in resultados)
+    return [f"Intenciones correctas: {intenciones}/{total} = {100 * intenciones / total:.1f}%",
+            f"Servicios correctos: {servicios}/{len(con_servicio)}",
+            f"Turnos correctos (intención y servicio): {turnos_correctos}/{total}"]
+
+
+def ejecutar():
+    """Ejecuta todas las conversaciones y guarda la transcripción y los resultados en evidencias/."""
+    resultados, transcripcion = [], []
+    for nombre, turnos in CONVERSACIONES.items():
+        transcripcion.append(f"===== {nombre} =====")
+        for resultado in evaluar_conversacion(turnos):
+            resultados.append({"conversacion": nombre, **resultado})
+            transcripcion += transcribir_turno(resultado)
+        transcripcion.append("")
+    transcripcion += resumen_de_resultados(resultados)
+    guardar_texto("transcripcion_pruebas.txt", transcripcion, mostrar=True)
+    guardar_json("resultados_pruebas.json", resultados)
     return resultados
 
 
@@ -243,10 +253,10 @@ def evaluar_generalizacion(bot, casos):
     lineas, aciertos = [], 0
     for consulta, esperado in casos:
         servicio = bot.recomendar(consulta)
-        obtenido = f"{servicio['metodo']} {servicio['endpoint']}" if servicio else None
-        ok = obtenido == esperado
-        aciertos += ok
-        lineas.append(f"{'OK   ' if ok else 'FALLA'} | {consulta:50} | esperado={esperado} | obtenido={obtenido}")
+        obtenido = operacion_http(servicio) if servicio else None   # None: el asistente reporta brecha
+        acierto = obtenido == esperado
+        aciertos += acierto
+        lineas.append(f"{'OK   ' if acierto else 'FALLA'} | {consulta:50} | esperado={esperado} | obtenido={obtenido}")
     return lineas, aciertos
 
 
@@ -258,10 +268,7 @@ def prueba_generalizacion():
         resultado, aciertos = evaluar_generalizacion(bot, casos)
         lineas += [f"===== {titulo} =====", *resultado,
                    f"Aciertos {titulo.lower()}: {aciertos}/{len(casos)}", ""]
-    destino = Path(__file__).parent / "evidencias"
-    destino.mkdir(exist_ok=True)
-    (destino / "prueba_generalizacion.txt").write_text("\n".join(lineas), encoding="utf-8")
-    print("\n".join(lineas))
+    guardar_texto("prueba_generalizacion.txt", lineas, mostrar=True)
 
 
 if __name__ == "__main__":

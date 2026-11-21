@@ -1,0 +1,90 @@
+===== Conjunto de imágenes =====
+conjunto        entrenamiento  estilo_nuevo  prueba  validacion
+clase                                                          
+login                     105            20      23          22
+cuentas                   105            20      23          22
+transferencia             105            20      23          22
+pago_servicios            105            20      23          22
+prestamo                  105            20      23          22
+seguros                   105            20      23          22
+documentos                105            20      23          22
+alta_cliente              105            20      23          22
+Entrenamiento con aumento: 1680 ejemplos (original + 1 copia aumentada)
+Capa Dense softmax: 80 épocas, lotes de 32, Adam con tasa de aprendizaje 0.001
+
+===== Selección de la regularización L2 (validación, F1 macro) =====
+  L2=0.1     accuracy=0.932 f1=0.932
+  L2=0.03    accuracy=0.949 f1=0.949
+  L2=0.01    accuracy=0.943 f1=0.943
+  L2=0.001   accuracy=0.960 f1=0.961
+  L2=0.0001  accuracy=0.955 f1=0.955
+  Elegido: L2=0.001
+
+===== Umbral de confianza para la integración (validación) =====
+  umbral 0.5: marca 1 de 7 errores y 3 de 169 aciertos
+  umbral 0.6: marca 2 de 7 errores y 4 de 169 aciertos
+  umbral 0.7: marca 3 de 7 errores y 6 de 169 aciertos
+  umbral 0.8: marca 5 de 7 errores y 7 de 169 aciertos
+
+===== Resumen (promedios macro sobre las 8 clases) =====
+modelo / conjunto                              accuracy  precision   recall       f1
+ResNet50 + softmax - entrenamiento                1.000      1.000    1.000    1.000
+ResNet50 + softmax - validacion                   0.960      0.961    0.960    0.961
+ResNet50 + softmax - prueba                       0.967      0.970    0.967    0.967
+ResNet50 + softmax - estilo_nuevo                 0.800      0.859    0.800    0.789
+  prueba, estilo alta                             0.950      0.956    0.950    0.950
+  prueba, estilo front                            1.000      1.000    1.000    1.000
+  prueba, escritorio                              0.988      0.990    0.989    0.989
+  prueba, movil                                   0.960      0.960    0.956    0.954
+  prueba, tableta                                 0.920      0.819    0.812    0.807
+Sin transferencia (píxeles) - prueba              0.408      0.506    0.408    0.428
+Sin transferencia (píxeles) - estilo nuevo        0.381      0.385    0.381    0.339
+
+===== Métricas por clase: prueba =====
+                precision    recall  f1-score   support
+
+         login      0.957     0.957     0.957        23
+       cuentas      1.000     1.000     1.000        23
+ transferencia      0.885     1.000     0.939        23
+pago_servicios      1.000     0.957     0.978        23
+      prestamo      1.000     0.957     0.978        23
+       seguros      0.920     1.000     0.958        23
+    documentos      1.000     1.000     1.000        23
+  alta_cliente      1.000     0.870     0.930        23
+
+      accuracy                          0.967       184
+     macro avg      0.970     0.967     0.967       184
+  weighted avg      0.970     0.967     0.967       184
+
+===== Métricas por clase: estilo nuevo (bocetos) =====
+                precision    recall  f1-score   support
+
+         login      1.000     0.850     0.919        20
+       cuentas      0.818     0.900     0.857        20
+ transferencia      0.667     0.700     0.683        20
+pago_servicios      0.947     0.900     0.923        20
+      prestamo      0.909     1.000     0.952        20
+       seguros      1.000     0.800     0.889        20
+    documentos      0.526     1.000     0.690        20
+  alta_cliente      1.000     0.250     0.400        20
+
+      accuracy                          0.800       160
+     macro avg      0.858     0.800     0.789       160
+  weighted avg      0.858     0.800     0.789       160
+
+===== Confianza (probabilidad de la clase elegida) en la prueba =====
+Aciertos: mediana 0.998, mínimo 0.565
+Errores:  mediana 0.772, máximo 0.974
+
+===== Errores en la prueba (6) =====
+  prueba/login/login_004.jpg | real=login | predicha=transferencia | prob=0.68
+  prueba/pago_servicios/pago_servicios_004.jpg | real=pago_servicios | predicha=seguros | prob=0.97
+  prueba/prestamo/prestamo_016.jpg | real=prestamo | predicha=seguros | prob=0.68
+  prueba/alta_cliente/alta_cliente_010.jpg | real=alta_cliente | predicha=transferencia | prob=0.32
+  prueba/alta_cliente/alta_cliente_019.jpg | real=alta_cliente | predicha=transferencia | prob=0.88
+  prueba/alta_cliente/alta_cliente_020.jpg | real=alta_cliente | predicha=login | prob=0.87
+
+===== Imágenes que no son pantallas (limitación: siempre se elige uno de los 8 tipos) =====
+  ruido aleatorio  -> transferencia (confianza 0.91)
+  imagen negra     -> transferencia (confianza 0.55)
+  degradado        -> transferencia (confianza 0.98)

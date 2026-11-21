@@ -194,7 +194,7 @@
   {
     "conversacion": "C08 Imagen de pantalla (fuera de v1)",
     "mensaje": "Te comparto la imagen del mockup de Figma",
-    "respuesta": "El análisis de imágenes de pantallas aún no está disponible en esta versión. Se incorporará en el Avance 2 con clasificación de imágenes. Por ahora, describe en texto los elementos de la pantalla (campos, botones, acciones).",
+    "respuesta": "Para analizar una pantalla necesito la imagen. En la terminal escribe '/imagen <ruta del archivo>'; en Colab usa bot.responder(texto, imagen='ruta.png'). También puedes describir en texto los campos y acciones de la pantalla.",
     "esperada": "analizar_imagen",
     "obtenida": "analizar_imagen",
     "operacion_esperada": null,
@@ -326,14 +326,14 @@
   {
     "conversacion": "C13 Fuera de dominio con palabra disparadora",
     "mensaje": "¿Qué ropa uso para mañana?",
-    "respuesta": "No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos.",
+    "respuesta": "Puedo ayudarte a:\n  1) Buscar un servicio por funcionalidad (ej. 'servicio para consultar saldo').\n  2) Analizar un requerimiento o pantalla con varias funciones y mostrar la cobertura.\n  3) Ver el detalle o contrato de un servicio (ej. 'detalle de SRV-007').\n  4) Listar los dominios y servicios del inventario.\n  5) Orientarte cuando exista una brecha (funcionalidad sin servicio).",
     "esperada": "fuera_de_alcance",
-    "obtenida": "fuera_de_alcance",
+    "obtenida": "charla",
     "operacion_esperada": null,
     "operacion_obtenida": null,
-    "intencion_ok": true,
+    "intencion_ok": false,
     "operacion_ok": true,
-    "correcto": true
+    "correcto": false
   },
   {
     "conversacion": "C14 Charla seguida de una petición",
@@ -398,14 +398,14 @@
   {
     "conversacion": "C18 Requerimiento que contiene 'no existe'",
     "mensaje": "servicio para validar que el cliente no existe antes de darlo de alta",
-    "respuesta": "Encontré estos servicios que pueden cubrir la funcionalidad:\n  1) SRV-014 Abre una cuenta bancaria después de validar identidad [POST /cuentas] - puntaje 6.18\n  2) SRV-002 Registra un cliente nuevo y crea su expediente básico para iniciar la… [POST /clientes] - puntaje 5.93\n  3) SRV-042 Acepta una cotización y solicita emitir la póliza después de validar… [POST /seguros/{idSeguro}/contratacion] - puntaje 5.36\nEscribe 'detalle del primero' o el ID para ver su contrato.",
+    "respuesta": "Cuando una funcionalidad no tiene servicio (brecha), te sugiero: \n  1) Reformular con otros términos o revisar servicios similares.\n  2) Verificar si un servicio existente puede extenderse.\n  3) Registrar la brecha con el equipo de arquitectura para evaluar un servicio nuevo.",
     "esperada": "buscar_servicio",
-    "obtenida": "buscar_servicio",
+    "obtenida": "reportar_brecha",
     "operacion_esperada": null,
     "operacion_obtenida": null,
-    "intencion_ok": true,
+    "intencion_ok": false,
     "operacion_ok": true,
-    "correcto": true
+    "correcto": false
   },
   {
     "conversacion": "C19 Búsqueda sin resultados tras una recomendación",

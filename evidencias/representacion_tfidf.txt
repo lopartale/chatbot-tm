@@ -1,0 +1,34 @@
+===== Matriz TF-IDF =====
+Entrenamiento: 508 frases x 1574 términos (458 unigramas, 1116 bigramas)
+Prueba: 126 frases x 1574 términos (mismo vocabulario)
+Valores distintos de cero: 3305 (0.41 % de la matriz; 6.5 términos por frase en promedio)
+Términos de prueba fuera del vocabulario: 229/810 (28.3 %); sólo unigramas: 32/468 (6.8 %)
+Frases de prueba sin ningún término conocido: 1
+
+===== Términos con mayor TF-IDF promedio por intención (entrenamiento) =====
+charla                  : graci (0.096), ayud (0.063), buen (0.039), que (0.036), eres (0.034), com (0.034)
+buscar_servicio         : client (0.052), consult (0.052), cuent (0.045), servici (0.033), api (0.03), pag (0.03)
+analizar_requerimiento  : y (0.137), pantall (0.063), client (0.059), cuent (0.046), pag (0.035), descarg (0.032)
+detalle_servicio        : srvid (0.114), primer (0.063), contrat (0.063), detall (0.051), servici (0.049), segund (0.046)
+listar_dominios         : que (0.089), domini (0.079), inventari (0.078), servici (0.073), hay (0.053), catalog (0.044)
+listar_por_dominio      : servici (0.108), domini (0.067), que (0.056), segur (0.054), pag (0.05), hipotec (0.046)
+reportar_brecha         : brech (0.076), no (0.074), que (0.073), servici (0.07), nuev (0.058), hag (0.054)
+analizar_imagen         : imag (0.116), pantall (0.065), esta (0.061), disen (0.061), adjunt (0.054), captur (0.053)
+fuera_de_alcance        : necesit (0.044), escribem (0.024), cual (0.024), hay (0.024), que (0.022), recomiendam (0.02)
+
+===== Vector de ejemplo (frase de entrenamiento): '¿Qué hago si no existe el servicio que necesito?' =====
+Términos: ['que', 'hag', 'si', 'no', 'exist', 'servici', 'que', 'necesit', 'que hag', 'hag si', 'si no', 'no exist', 'exist servici', 'servici que', 'que necesit']
+  hag si                 tf-idf=0.315  idf=5.846
+  que necesit            tf-idf=0.315  idf=5.846
+  si no                  tf-idf=0.315  idf=5.846
+  exist servici          tf-idf=0.303  idf=5.623
+  no exist               tf-idf=0.293  idf=5.441
+  servici que            tf-idf=0.285  idf=5.287
+  si                     tf-idf=0.271  idf=5.035
+  hag                    tf-idf=0.260  idf=4.835
+  que hag                tf-idf=0.260  idf=4.835
+  exist                  tf-idf=0.247  idf=4.593
+  no                     tf-idf=0.237  idf=4.399
+  que                    tf-idf=0.225  idf=2.470
+  necesit                tf-idf=0.216  idf=4.014
+  servici                tf-idf=0.144  idf=2.668

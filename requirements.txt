@@ -1,4 +1,18 @@
-nltk>=3.9
-PyYAML>=6.0
-pandas>=2.0
-pytest>=8.0
+# Versiones probadas. "~=" admite correcciones (por ejemplo 1.9.x) pero no cambios de versión
+# menor, porque los modelos .joblib dependen de la versión de scikit-learn con que se guardaron.
+nltk~=3.9.1
+PyYAML~=6.0.3
+pandas~=3.0.5
+pytest~=9.1.1
+# Avance 2
+numpy~=2.5.3
+scikit-learn~=1.9.1
+joblib~=1.6.0
+matplotlib~=3.11.2
+Pillow~=12.3.0
+# Clasificador visual con Keras sobre TensorFlow. Keras se fija en la versión con que se guardó
+# modelos/clasificador_pantallas.keras; un modelo .keras puede no abrirse con otra versión menor.
+# TensorFlow 2.22.0rc1 es la versión probada (preliminar); "~=" admite la 2.22.0 final cuando salga
+tensorflow~=2.22.0rc1
+keras~=3.15.1
+playwright~=1.63.0

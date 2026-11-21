@@ -1,0 +1,45 @@
+===== Ejemplos paso a paso =====
+original            : ¿Qué hago si no existe el servicio que necesito?
+normalizado         : que hago si no existe el servicio que necesito?
+tokens              : ['que', 'hago', 'si', 'no', 'existe', 'el', 'servicio', 'que', 'necesito']
+sin_palabras_vacias : ['que', 'hago', 'si', 'no', 'existe', 'servicio', 'que', 'necesito']
+raices              : ['que', 'hag', 'si', 'no', 'exist', 'servici', 'que', 'necesit']
+
+original            : Pantalla de captura de datos del cliente con domicilio y correo
+normalizado         : pantalla de captura de datos del cliente con domicilio y correo
+tokens              : ['pantalla', 'de', 'captura', 'de', 'datos', 'del', 'cliente', 'con', 'domicilio', 'y', 'correo']
+sin_palabras_vacias : ['pantalla', 'captura', 'datos', 'cliente', 'domicilio', 'y', 'correo']
+raices              : ['pantall', 'captur', 'dat', 'client', 'domicili', 'y', 'corre']
+
+original            : Detalle de SRV-012
+normalizado         : detalle de srvid
+tokens              : ['detalle', 'de', 'srvid']
+sin_palabras_vacias : ['detalle', 'srvid']
+raices              : ['detall', 'srvid']
+
+original            : ayudaaa, q puedes hacer
+normalizado         : ayuda, que puedes hacer
+tokens              : ['ayuda', 'que', 'puedes', 'hacer']
+sin_palabras_vacias : ['ayuda', 'que', 'puedes', 'hacer']
+raices              : ['ayud', 'que', 'pued', 'hac']
+
+original            : Te comparto el mockup de la pantalla
+normalizado         : te comparto el mockup de la pantalla
+tokens              : ['te', 'comparto', 'el', 'mockup', 'de', 'la', 'pantalla']
+sin_palabras_vacias : ['comparto', 'mockup', 'pantalla']
+raices              : ['compart', 'mockup', 'pantall']
+
+original            : ¿Hay partido de futbol hoy?
+normalizado         : hay partido de futbol hoy?
+tokens              : ['hay', 'partido', 'de', 'futbol', 'hoy']
+sin_palabras_vacias : ['hay', 'partido', 'futbol', 'hoy']
+raices              : ['hay', 'part', 'futbol', 'hoy']
+
+===== Vocabulario del conjunto de entrenamiento (508 frases) =====
+paso                              términos distintos  términos totales
+tokenización (sin normalizar)                    638              2583
++ normalización                                  626              2778
++ palabras vacías                                578              1912
++ stemming                                       458              1912
+
+Frases que quedan sin términos: 0 []

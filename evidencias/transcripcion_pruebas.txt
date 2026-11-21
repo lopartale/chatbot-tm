@@ -140,7 +140,7 @@ Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
 
 ===== C08 Imagen de pantalla (fuera de v1) =====
 Tú : Te comparto la imagen del mockup de Figma
-Bot: El análisis de imágenes de pantallas aún no está disponible en esta versión. Se incorporará en el Avance 2 con clasificación de imágenes. Por ahora, describe en texto los elementos de la pantalla (campos, botones, acciones).
+Bot: Para analizar una pantalla necesito la imagen. En la terminal escribe '/imagen <ruta del archivo>'; en Colab usa bot.responder(texto, imagen='ruta.png'). También puedes describir en texto los campos y acciones de la pantalla.
      [intención: analizar_imagen | esperada: analizar_imagen | OK]
 Tú : Pantalla con resumen de cuentas, transferencia a un beneficiario y pago de servicios
 Bot: Analicé 3 necesidades funcionales. Cobertura: 100%.
@@ -206,8 +206,13 @@ Bot: ¡Hasta luego! Recuerda reutilizar antes de construir.
 
 ===== C13 Fuera de dominio con palabra disparadora =====
 Tú : ¿Qué ropa uso para mañana?
-Bot: No entendí tu consulta o está fuera de mi alcance. Puedo buscar servicios REST por funcionalidad, analizar requerimientos de pantallas o mostrar contratos. Escribe 'ayuda' para ver ejemplos.
-     [intención: fuera_de_alcance | esperada: fuera_de_alcance | OK]
+Bot: Puedo ayudarte a:
+       1) Buscar un servicio por funcionalidad (ej. 'servicio para consultar saldo').
+       2) Analizar un requerimiento o pantalla con varias funciones y mostrar la cobertura.
+       3) Ver el detalle o contrato de un servicio (ej. 'detalle de SRV-007').
+       4) Listar los dominios y servicios del inventario.
+       5) Orientarte cuando exista una brecha (funcionalidad sin servicio).
+     [intención: charla | esperada: fuera_de_alcance | FALLA]
 
 ===== C14 Charla seguida de una petición =====
 Tú : Perfecto, ahora necesito un servicio para consultar movimientos
@@ -255,12 +260,11 @@ Bot: Servicios del dominio seguros:
 
 ===== C18 Requerimiento que contiene 'no existe' =====
 Tú : servicio para validar que el cliente no existe antes de darlo de alta
-Bot: Encontré estos servicios que pueden cubrir la funcionalidad:
-       1) SRV-014 Abre una cuenta bancaria después de validar identidad [POST /cuentas] - puntaje 6.18
-       2) SRV-002 Registra un cliente nuevo y crea su expediente básico para iniciar la… [POST /clientes] - puntaje 5.93
-       3) SRV-042 Acepta una cotización y solicita emitir la póliza después de validar… [POST /seguros/{idSeguro}/contratacion] - puntaje 5.36
-     Escribe 'detalle del primero' o el ID para ver su contrato.
-     [intención: buscar_servicio | esperada: buscar_servicio | OK]
+Bot: Cuando una funcionalidad no tiene servicio (brecha), te sugiero: 
+       1) Reformular con otros términos o revisar servicios similares.
+       2) Verificar si un servicio existente puede extenderse.
+       3) Registrar la brecha con el equipo de arquitectura para evaluar un servicio nuevo.
+     [intención: reportar_brecha | esperada: buscar_servicio | FALLA]
 
 ===== C19 Búsqueda sin resultados tras una recomendación =====
 Tú : servicio para consultar movimientos
@@ -285,6 +289,6 @@ Bot: SRV-017 - Consulta el historial de cargos (dominio cuentas)
        Controles: token Bearer en el encabezado Authorization
      [intención: detalle_servicio | esperada: detalle_servicio | servicio: GET /cuentas/{idCuenta}/movimientos | esperado: GET /cuentas/{idCuenta}/movimientos | OK]
 
-Intenciones correctas: 37/37 = 100.0%
+Intenciones correctas: 35/37 = 94.6%
 Servicios correctos: 21/21
-Turnos correctos (intención y servicio): 37/37
+Turnos correctos (intención y servicio): 35/37

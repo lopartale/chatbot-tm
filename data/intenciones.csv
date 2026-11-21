@@ -1,0 +1,635 @@
+texto,intencion,conjunto,tipo
+"Hola, buenas tardes",charla,entrenamiento,normal
+qué onda,charla,entrenamiento,normal
+¿Qué puedes hacer por mí?,charla,entrenamiento,normal
+Necesito ayuda,charla,entrenamiento,dificil
+¿Cómo te uso?,charla,entrenamiento,normal
+"Muchas gracias, me sirvió bastante",charla,entrenamiento,normal
+"Ok, gracias",charla,entrenamiento,normal
+"Nos vemos, bye",charla,entrenamiento,normal
+¿Quién eres?,charla,entrenamiento,normal
+"Hola, ¿cómo funcionas?",charla,entrenamiento,dificil
+Buenos días,charla,entrenamiento,normal
+buenas noches,charla,entrenamiento,normal
+hey,charla,entrenamiento,normal
+saludos,charla,entrenamiento,normal
+hola asistente,charla,entrenamiento,normal
+holi,charla,entrenamiento,normal
+"qué tal, buen día",charla,entrenamiento,normal
+¿Me ayudas?,charla,entrenamiento,normal
+ayuda por favor,charla,entrenamiento,normal
+menu,charla,entrenamiento,normal
+¿Para qué sirves?,charla,entrenamiento,normal
+¿Qué sabes hacer?,charla,entrenamiento,normal
+¿Qué tipo de preguntas puedo hacerte?,charla,entrenamiento,normal
+dame ejemplos de lo que puedo preguntar,charla,entrenamiento,normal
+¿cómo funciona esto?,charla,entrenamiento,normal
+no sé por dónde empezar,charla,entrenamiento,dificil
+¿me explicas cómo usarte?,charla,entrenamiento,normal
+gracias por la ayuda,charla,entrenamiento,normal
+mil gracias,charla,entrenamiento,normal
+te agradezco,charla,entrenamiento,normal
+"excelente, gracias",charla,entrenamiento,normal
+perfecto,charla,entrenamiento,normal
+"listo, eso era todo",charla,entrenamiento,normal
+"muy útil, gracias",charla,entrenamiento,normal
+genial,charla,entrenamiento,normal
+"adiós, gracias por todo",charla,entrenamiento,normal
+hasta luego,charla,entrenamiento,normal
+"me voy, gracias",charla,entrenamiento,normal
+chao,charla,entrenamiento,normal
+nos leemos,charla,entrenamiento,normal
+terminar,charla,entrenamiento,normal
+salir,charla,entrenamiento,normal
+hasta mañana,charla,entrenamiento,normal
+eso es todo por hoy,charla,entrenamiento,normal
+¿cómo te llamas?,charla,entrenamiento,normal
+¿eres un bot?,charla,entrenamiento,normal
+¿qué eres?,charla,entrenamiento,normal
+¿eres una persona?,charla,entrenamiento,normal
+"buen día, ¿qué puedes hacer?",charla,entrenamiento,normal
+hola de nuevo,charla,entrenamiento,normal
+ok,charla,entrenamiento,normal
+"sale, gracias",charla,entrenamiento,normal
+ayudaaa,charla,entrenamiento,dificil
+ola,charla,entrenamiento,dificil
+grax,charla,entrenamiento,dificil
+q puedes hacer,charla,entrenamiento,dificil
+Buenas tardes,charla,entrenamiento,normal
+Nos vemos,charla,entrenamiento,normal
+Muchas gracias,charla,entrenamiento,normal
+Gracias por todo,charla,entrenamiento,normal
+Gracias por tu ayuda,charla,entrenamiento,normal
+Excelente,charla,entrenamiento,normal
+Listo,charla,entrenamiento,normal
+Help,charla,entrenamiento,normal
+¿Cómo funcionas?,charla,entrenamiento,normal
+¿Qué haces?,charla,entrenamiento,normal
+¿Hay algún servicio para consultar el saldo de una cuenta?,buscar_servicio,entrenamiento,normal
+saldo disponible de la cuenta,buscar_servicio,entrenamiento,normal
+Requiero el endpoint que cancela una transferencia,buscar_servicio,entrenamiento,normal
+como cotizo un seguro de auto,buscar_servicio,entrenamiento,normal
+¿Con qué API valido el código de segundo factor?,buscar_servicio,entrenamiento,normal
+servicio para descargar el estado de cuenta en PDF,buscar_servicio,entrenamiento,normal
+Subir la foto de la identificación del cliente,buscar_servicio,entrenamiento,dificil
+necesito registrar un beneficiario nuevo,buscar_servicio,entrenamiento,normal
+¿Existe algo para cifrar datos sensibles?,buscar_servicio,entrenamiento,normal
+quiero ver la tabla de amortizacion de un prestamo,buscar_servicio,entrenamiento,dificil
+consultar los movimientos de una cuenta,buscar_servicio,entrenamiento,normal
+¿hay API para iniciar sesión?,buscar_servicio,entrenamiento,normal
+endpoint para cerrar sesión,buscar_servicio,entrenamiento,normal
+servicio para actualizar el domicilio del cliente,buscar_servicio,entrenamiento,normal
+¿Cómo cambio el correo de un cliente?,buscar_servicio,entrenamiento,normal
+necesito dar de alta un cliente,buscar_servicio,entrenamiento,normal
+buscar clientes por RFC,buscar_servicio,entrenamiento,normal
+¿existe un servicio que liste las cuentas de un cliente?,buscar_servicio,entrenamiento,normal
+abrir una cuenta nueva,buscar_servicio,entrenamiento,normal
+bloquear una cuenta,buscar_servicio,entrenamiento,normal
+quiero conocer el saldo pendiente de un préstamo,buscar_servicio,entrenamiento,normal
+¿hay un servicio para pedir un crédito?,buscar_servicio,entrenamiento,normal
+registrar el pago de una mensualidad del préstamo,buscar_servicio,entrenamiento,normal
+endpoint para hacer una transferencia a otra cuenta,buscar_servicio,entrenamiento,normal
+¿cómo consulto el estatus de una transferencia?,buscar_servicio,entrenamiento,normal
+listar las transferencias de un cliente,buscar_servicio,entrenamiento,normal
+obtener el comprobante de un pago,buscar_servicio,entrenamiento,normal
+pagar un servicio con referencia,buscar_servicio,entrenamiento,normal
+¿qué API me da los convenios de pago?,buscar_servicio,entrenamiento,normal
+consultar el historial de pagos,buscar_servicio,entrenamiento,normal
+solicitar una hipoteca,buscar_servicio,entrenamiento,normal
+servicio para consultar el avance de una hipoteca,buscar_servicio,entrenamiento,normal
+adjuntar documentos a una solicitud de hipoteca,buscar_servicio,entrenamiento,normal
+contratar un seguro de vida,buscar_servicio,entrenamiento,normal
+cancelar una póliza,buscar_servicio,entrenamiento,normal
+consultar los seguros de un cliente,buscar_servicio,entrenamiento,normal
+generar un token de sesión,buscar_servicio,entrenamiento,normal
+verificar el código OTP,buscar_servicio,entrenamiento,normal
+descifrar un dato cifrado,buscar_servicio,entrenamiento,normal
+¿hay algo para cargar un documento?,buscar_servicio,entrenamiento,normal
+consultar un documento por su id,buscar_servicio,entrenamiento,normal
+eliminar un beneficiario,buscar_servicio,entrenamiento,normal
+actualizar el límite diario de un beneficiario,buscar_servicio,entrenamiento,normal
+consultar los beneficiarios de un cliente,buscar_servicio,entrenamiento,normal
+api de login,buscar_servicio,entrenamiento,normal
+endpoint de logout,buscar_servicio,entrenamiento,normal
+necesito un servicio que me regrese el saldo,buscar_servicio,entrenamiento,normal
+movimientos del ultimo mes,buscar_servicio,entrenamiento,normal
+cotizar seguro de casa,buscar_servicio,entrenamiento,normal
+necesito saber si existe un servicio para invertir en fondos,buscar_servicio,entrenamiento,dificil
+servicio para consultar el tipo de cambio,buscar_servicio,entrenamiento,dificil
+¿hay api para bloquear una tarjeta?,buscar_servicio,entrenamiento,dificil
+quiero modificar los datos de contacto del cliente,buscar_servicio,entrenamiento,normal
+¿qué servicio uso para pagar la luz?,buscar_servicio,entrenamiento,normal
+encriptar el numero de cuenta,buscar_servicio,entrenamiento,normal
+quiero ver la imagen de la credencial del cliente guardada,buscar_servicio,entrenamiento,dificil
+subir la foto de perfil del cliente,buscar_servicio,entrenamiento,dificil
+Pantalla de inicio con el resumen de cuentas y los últimos movimientos,analizar_requerimiento,entrenamiento,normal
+Pantalla de captura de datos del cliente con domicilio y correo,analizar_requerimiento,entrenamiento,dificil
+Formulario para solicitar una hipoteca y adjuntar las escrituras,analizar_requerimiento,entrenamiento,normal
+Historia de usuario: como cliente quiero transferir a un beneficiario y descargar el comprobante,analizar_requerimiento,entrenamiento,normal
+"vista de pagos: elegir convenio, capturar referencia y pagar",analizar_requerimiento,entrenamiento,normal
+"El módulo de seguros debe cotizar, contratar y cancelar pólizas",analizar_requerimiento,entrenamiento,normal
+"Requerimiento: login con usuario y contraseña, y verificación por SMS",analizar_requerimiento,entrenamiento,normal
+"caso de uso alta de cliente, abrir su cuenta y asignar beneficiarios",analizar_requerimiento,entrenamiento,normal
+"Necesito armar la pantalla del préstamo: ver saldo pendiente, calendario de pagos y pagar una mensualidad",analizar_requerimiento,entrenamiento,normal
+Una pantalla donde el asesor busque al cliente y vea sus seguros contratados,analizar_requerimiento,entrenamiento,dificil
+Pantalla del front para consultar movimientos y descargar el estado de cuenta,analizar_requerimiento,entrenamiento,dificil
+"pantalla de transferencias: elegir cuenta origen, beneficiario, monto y confirmar con segundo factor",analizar_requerimiento,entrenamiento,normal
+"formulario de registro de cliente con nombre, correo, domicilio y teléfono",analizar_requerimiento,entrenamiento,normal
+Requerimiento del front: listado de préstamos del cliente y saldo de cada uno,analizar_requerimiento,entrenamiento,normal
+vista de perfil donde el cliente actualiza su correo y su domicilio,analizar_requerimiento,entrenamiento,normal
+"módulo de beneficiarios: agregar, editar y eliminar beneficiarios",analizar_requerimiento,entrenamiento,normal
+pantalla de cotización de seguro con datos del auto y botón para contratar,analizar_requerimiento,entrenamiento,normal
+historia de usuario: como asesor quiero buscar un cliente y ver sus cuentas,analizar_requerimiento,entrenamiento,normal
+caso de uso: el cliente paga un servicio y recibe el comprobante,analizar_requerimiento,entrenamiento,normal
+"requerimiento: login, cierre de sesión y verificación por código",analizar_requerimiento,entrenamiento,normal
+pantalla de hipotecas para ver solicitudes y subir documentos,analizar_requerimiento,entrenamiento,normal
+"la pantalla debe mostrar saldo, movimientos y permitir transferir",analizar_requerimiento,entrenamiento,normal
+"dashboard del cliente con cuentas, préstamos y seguros",analizar_requerimiento,entrenamiento,normal
+frontend de pagos con lista de convenios y pago con referencia,analizar_requerimiento,entrenamiento,normal
+vista para cancelar una transferencia y descargar su comprobante,analizar_requerimiento,entrenamiento,normal
+pantalla de seguridad que cifre y descifre datos del cliente,analizar_requerimiento,entrenamiento,normal
+formulario de solicitud de préstamo con simulación de mensualidades,analizar_requerimiento,entrenamiento,normal
+"requerimiento: el usuario consulta su estado de cuenta, lo descarga y lo envía por correo",analizar_requerimiento,entrenamiento,normal
+"pantalla de alta de cuenta: elegir cliente, tipo de cuenta y confirmar",analizar_requerimiento,entrenamiento,normal
+"módulo de documentos: cargar un archivo, consultarlo y eliminarlo",analizar_requerimiento,entrenamiento,normal
+historia de usuario: como cliente quiero ver mis pólizas y cancelar una,analizar_requerimiento,entrenamiento,normal
+en el front necesito una tabla de movimientos con filtro por fecha y exportar a pdf,analizar_requerimiento,entrenamiento,normal
+"pantalla de onboarding: registro, verificación de identidad y apertura de cuenta",analizar_requerimiento,entrenamiento,normal
+"pantalla de captura de beneficiarios con nombre, cuenta y límite diario",analizar_requerimiento,entrenamiento,dificil
+formulario para capturar la referencia y el monto del pago,analizar_requerimiento,entrenamiento,dificil
+pantalla donde el cliente sube la foto de su identificación y su comprobante de domicilio,analizar_requerimiento,entrenamiento,dificil
+vista previa del estado de cuenta antes de descargarlo,analizar_requerimiento,entrenamiento,dificil
+"requerimiento para el front de préstamos: saldo, amortización y pago anticipado",analizar_requerimiento,entrenamiento,normal
+"caso de uso de transferencia: validar saldo, transferir y notificar",analizar_requerimiento,entrenamiento,normal
+"pantalla de inicio de sesión con usuario, contraseña y código SMS",analizar_requerimiento,entrenamiento,normal
+"pantalla de seguros: listado de pólizas, consulta de cobertura y cancelación",analizar_requerimiento,entrenamiento,normal
+el formulario debe registrar al cliente y crearle una cuenta de ahorro,analizar_requerimiento,entrenamiento,normal
+vista del asesor para consultar préstamos e hipotecas del cliente,analizar_requerimiento,entrenamiento,normal
+"requerimiento funcional: consultar convenios, pagar y ver historial de pagos",analizar_requerimiento,entrenamiento,normal
+"módulo de administración de clientes: buscar, editar y dar de baja",analizar_requerimiento,entrenamiento,normal
+"pantalla del front de hipoteca: solicitar, adjuntar escrituras y ver estatus",analizar_requerimiento,entrenamiento,normal
+historia de usuario: como cliente quiero bloquear mi cuenta y ver mis últimos movimientos,analizar_requerimiento,entrenamiento,normal
+necesito una pantalla que muestre las transferencias enviadas y permita cancelarlas,analizar_requerimiento,entrenamiento,normal
+"pantalla para pagar la tarjeta, ver el saldo y descargar el comprobante",analizar_requerimiento,entrenamiento,normal
+requerimiento: alta de beneficiario con confirmación por segundo factor,analizar_requerimiento,entrenamiento,normal
+"vista de cuenta con saldo disponible, saldo retenido y movimientos recientes",analizar_requerimiento,entrenamiento,normal
+"pantalla donde se cotiza, se contrata y se descarga la póliza",analizar_requerimiento,entrenamiento,normal
+"formulario de contacto del cliente: teléfono, correo y dirección",analizar_requerimiento,entrenamiento,normal
+quiero hacer una pantalla para el front que liste clientes y permita editarlos,analizar_requerimiento,entrenamiento,dificil
+el front tiene un formulario de transferencia y una tabla de beneficiarios,analizar_requerimiento,entrenamiento,dificil
+Detalle de SRV-012,detalle_servicio,entrenamiento,normal
+dame el contrato del segundo,detalle_servicio,entrenamiento,normal
+¿Qué parámetros recibe ese servicio?,detalle_servicio,entrenamiento,normal
+¿Cómo se consume el primero?,detalle_servicio,entrenamiento,normal
+srv 30,detalle_servicio,entrenamiento,normal
+¿Qué devuelve el servicio de comprobante de transferencia?,detalle_servicio,entrenamiento,normal
+muestrame la entrada y salida del tercero,detalle_servicio,entrenamiento,normal
+¿Cuál es la URL del servicio de cotización de seguros?,detalle_servicio,entrenamiento,normal
+¿Ese requiere segundo factor?,detalle_servicio,entrenamiento,dificil
+Más información del primero que me diste,detalle_servicio,entrenamiento,dificil
+detalle de srv-001,detalle_servicio,entrenamiento,normal
+SRV-045,detalle_servicio,entrenamiento,normal
+contrato de SRV-020,detalle_servicio,entrenamiento,normal
+¿qué recibe SRV-033?,detalle_servicio,entrenamiento,normal
+parámetros de srv-7,detalle_servicio,entrenamiento,normal
+¿cuál es la salida del primero?,detalle_servicio,entrenamiento,normal
+contrato del tercero,detalle_servicio,entrenamiento,normal
+dame el detalle,detalle_servicio,entrenamiento,normal
+¿cómo se usa ese servicio?,detalle_servicio,entrenamiento,normal
+¿qué campos lleva el cuerpo del segundo?,detalle_servicio,entrenamiento,normal
+¿qué método HTTP usa el primero?,detalle_servicio,entrenamiento,normal
+¿qué endpoint tiene el servicio de login?,detalle_servicio,entrenamiento,normal
+especificación del servicio de transferencias,detalle_servicio,entrenamiento,normal
+¿qué headers necesita el primero?,detalle_servicio,entrenamiento,normal
+¿ese es idempotente?,detalle_servicio,entrenamiento,dificil
+¿qué responde el servicio de saldo?,detalle_servicio,entrenamiento,normal
+muéstrame el contrato del servicio de cancelación de pólizas,detalle_servicio,entrenamiento,normal
+¿qué códigos de respuesta tiene?,detalle_servicio,entrenamiento,normal
+datos de entrada del servicio de alta de cliente,detalle_servicio,entrenamiento,normal
+¿qué parámetros de consulta acepta el segundo?,detalle_servicio,entrenamiento,normal
+dame más info del tercero,detalle_servicio,entrenamiento,normal
+¿qué necesito enviar para consumirlo?,detalle_servicio,entrenamiento,normal
+quiero ver el contrato completo,detalle_servicio,entrenamiento,normal
+detalles por favor,detalle_servicio,entrenamiento,normal
+explícame el segundo servicio,detalle_servicio,entrenamiento,normal
+¿cuál es la ruta del primero?,detalle_servicio,entrenamiento,normal
+¿el primero necesita token?,detalle_servicio,entrenamiento,dificil
+srv-050 contrato,detalle_servicio,entrenamiento,normal
+información de SRV-009,detalle_servicio,entrenamiento,normal
+¿qué hace SRV-027?,detalle_servicio,entrenamiento,normal
+descripción del servicio de comprobante,detalle_servicio,entrenamiento,normal
+¿cómo llamo al servicio de cotización?,detalle_servicio,entrenamiento,normal
+¿ese servicio pagina resultados?,detalle_servicio,entrenamiento,dificil
+parámetros del endpoint de movimientos,detalle_servicio,entrenamiento,normal
+¿y el segundo?,detalle_servicio,entrenamiento,dificil
+cuéntame más del primero,detalle_servicio,entrenamiento,dificil
+¿qué tipo de dato es el monto en ese servicio?,detalle_servicio,entrenamiento,dificil
+abre el tercero,detalle_servicio,entrenamiento,dificil
+esquema de respuesta del primero,detalle_servicio,entrenamiento,normal
+url completa del servicio de pagos,detalle_servicio,entrenamiento,normal
+¿qué body manda el segundo?,detalle_servicio,entrenamiento,normal
+¿cuál es el request del primero?,detalle_servicio,entrenamiento,normal
+¿el tercero es GET o POST?,detalle_servicio,entrenamiento,normal
+srv-015 detalle,detalle_servicio,entrenamiento,normal
+contrato,detalle_servicio,entrenamiento,normal
+¿Qué dominios tiene el inventario?,listar_dominios,entrenamiento,normal
+muéstrame el catálogo de servicios,listar_dominios,entrenamiento,normal
+¿Cuántos servicios hay en total?,listar_dominios,entrenamiento,normal
+Lista todos los servicios disponibles,listar_dominios,entrenamiento,normal
+¿Qué categorías de APIs manejan?,listar_dominios,entrenamiento,normal
+dame un panorama general del inventario,listar_dominios,entrenamiento,normal
+¿Qué áreas del banco están cubiertas?,listar_dominios,entrenamiento,normal
+enlista los dominios,listar_dominios,entrenamiento,normal
+¿Qué tienes en tu base de conocimiento?,listar_dominios,entrenamiento,normal
+¿Qué servicios existen?,listar_dominios,entrenamiento,dificil
+¿qué hay en el inventario?,listar_dominios,entrenamiento,normal
+dominios disponibles,listar_dominios,entrenamiento,normal
+muéstrame el inventario,listar_dominios,entrenamiento,normal
+¿cuáles son los dominios?,listar_dominios,entrenamiento,normal
+lista de servicios,listar_dominios,entrenamiento,normal
+todos los servicios,listar_dominios,entrenamiento,normal
+¿de qué temas tienes servicios?,listar_dominios,entrenamiento,normal
+resumen del inventario,listar_dominios,entrenamiento,normal
+¿cuántos dominios hay?,listar_dominios,entrenamiento,normal
+¿qué módulos tiene la plataforma bancaria?,listar_dominios,entrenamiento,normal
+catálogo,listar_dominios,entrenamiento,normal
+¿qué APIs tienen?,listar_dominios,entrenamiento,normal
+inventario completo,listar_dominios,entrenamiento,normal
+¿qué servicios tienes?,listar_dominios,entrenamiento,normal
+quiero ver todo lo que hay,listar_dominios,entrenamiento,normal
+enséñame las categorías,listar_dominios,entrenamiento,normal
+¿cómo está organizado el inventario?,listar_dominios,entrenamiento,normal
+listado general de APIs,listar_dominios,entrenamiento,normal
+¿qué cubre la plataforma?,listar_dominios,entrenamiento,normal
+¿cuántas APIs hay por dominio?,listar_dominios,entrenamiento,normal
+dame la lista de dominios con su número de servicios,listar_dominios,entrenamiento,normal
+¿qué grupos de servicios existen?,listar_dominios,entrenamiento,normal
+¿qué familias de endpoints hay?,listar_dominios,entrenamiento,normal
+ver catálogo de servicios,listar_dominios,entrenamiento,normal
+servicios disponibles,listar_dominios,entrenamiento,normal
+¿qué servicios hay?,listar_dominios,entrenamiento,dificil
+¿qué hay?,listar_dominios,entrenamiento,dificil
+¿qué recursos REST expone el RAML?,listar_dominios,entrenamiento,normal
+vista general de la API bancaria,listar_dominios,entrenamiento,normal
+¿qué dominios funcionales cubre el banco?,listar_dominios,entrenamiento,normal
+muéstrame un mapa de los servicios,listar_dominios,entrenamiento,normal
+¿qué secciones tiene el inventario?,listar_dominios,entrenamiento,normal
+¿qué contiene el RAML?,listar_dominios,entrenamiento,normal
+enumera las áreas del inventario,listar_dominios,entrenamiento,normal
+listame todo,listar_dominios,entrenamiento,normal
+¿cuántos endpoints existen?,listar_dominios,entrenamiento,normal
+¿qué más tienes?,listar_dominios,entrenamiento,dificil
+inventario por favor,listar_dominios,entrenamiento,normal
+tabla de dominios,listar_dominios,entrenamiento,normal
+¿qué tipos de servicios hay?,listar_dominios,entrenamiento,normal
+panorama del catálogo,listar_dominios,entrenamiento,normal
+¿qué dominios conoces?,listar_dominios,entrenamiento,normal
+¿qué cubre tu inventario?,listar_dominios,entrenamiento,normal
+servicios por dominio,listar_dominios,entrenamiento,normal
+muestra los dominios del banco,listar_dominios,entrenamiento,normal
+Servicios de pagos,listar_por_dominio,entrenamiento,normal
+¿Qué servicios hay de hipotecas?,listar_por_dominio,entrenamiento,normal
+muestrame todo lo de seguros,listar_por_dominio,entrenamiento,normal
+Lista los endpoints del dominio de autenticación,listar_por_dominio,entrenamiento,normal
+¿Qué operaciones tiene transferencias?,listar_por_dominio,entrenamiento,normal
+servicios del dominio clientes,listar_por_dominio,entrenamiento,normal
+¿Qué puedo hacer con préstamos?,listar_por_dominio,entrenamiento,normal
+dame las APIs de criptografía,listar_por_dominio,entrenamiento,normal
+Todos los servicios de documentos,listar_por_dominio,entrenamiento,normal
+servicios de cuentas para un cliente,listar_por_dominio,entrenamiento,dificil
+servicios de clientes,listar_por_dominio,entrenamiento,normal
+¿qué hay en cuentas?,listar_por_dominio,entrenamiento,normal
+lista de servicios de transferencias,listar_por_dominio,entrenamiento,normal
+endpoints de préstamos,listar_por_dominio,entrenamiento,normal
+¿qué APIs hay de pagos?,listar_por_dominio,entrenamiento,normal
+muéstrame seguros,listar_por_dominio,entrenamiento,normal
+servicios del dominio hipotecas,listar_por_dominio,entrenamiento,normal
+¿qué operaciones tiene autenticación?,listar_por_dominio,entrenamiento,normal
+servicios de criptografia,listar_por_dominio,entrenamiento,normal
+todo lo de documentos,listar_por_dominio,entrenamiento,normal
+¿qué servicios hay para cuentas?,listar_por_dominio,entrenamiento,normal
+dame el dominio de clientes,listar_por_dominio,entrenamiento,normal
+¿qué endpoints tiene el dominio de pagos?,listar_por_dominio,entrenamiento,normal
+lista los servicios de seguros,listar_por_dominio,entrenamiento,normal
+servicios relacionados con préstamos,listar_por_dominio,entrenamiento,normal
+¿qué puedo hacer en el dominio de transferencias?,listar_por_dominio,entrenamiento,normal
+operaciones de hipotecas,listar_por_dominio,entrenamiento,normal
+servicios de autenticacion,listar_por_dominio,entrenamiento,normal
+¿y los de pagos?,listar_por_dominio,entrenamiento,dificil
+ahora los de seguros,listar_por_dominio,entrenamiento,dificil
+apis de cuentas,listar_por_dominio,entrenamiento,normal
+¿qué tiene el módulo de clientes?,listar_por_dominio,entrenamiento,normal
+servicios disponibles de criptografía,listar_por_dominio,entrenamiento,normal
+enlista documentos,listar_por_dominio,entrenamiento,normal
+el dominio de prestamos completo,listar_por_dominio,entrenamiento,normal
+¿cuántos servicios tiene seguros?,listar_por_dominio,entrenamiento,normal
+¿qué hay de hipotecas?,listar_por_dominio,entrenamiento,normal
+dominio cuentas,listar_por_dominio,entrenamiento,normal
+ver servicios de transferencias,listar_por_dominio,entrenamiento,normal
+endpoints del dominio de documentos,listar_por_dominio,entrenamiento,normal
+servicios de pagos para el front,listar_por_dominio,entrenamiento,dificil
+servicios de clientes y sus cuentas,listar_por_dominio,entrenamiento,dificil
+qué tiene criptografía,listar_por_dominio,entrenamiento,normal
+todos los endpoints de autenticación,listar_por_dominio,entrenamiento,normal
+servicios de seguro,listar_por_dominio,entrenamiento,normal
+servicios de prestamo,listar_por_dominio,entrenamiento,normal
+muéstrame el dominio de pagos,listar_por_dominio,entrenamiento,normal
+¿qué APIs expone hipotecas?,listar_por_dominio,entrenamiento,normal
+dame transferencias,listar_por_dominio,entrenamiento,normal
+lista seguros,listar_por_dominio,entrenamiento,normal
+¿qué servicios tiene el dominio de cuentas?,listar_por_dominio,entrenamiento,normal
+documentos: ¿qué servicios hay?,listar_por_dominio,entrenamiento,normal
+servicios de hipoteca,listar_por_dominio,entrenamiento,normal
+¿qué endpoints hay en clientes?,listar_por_dominio,entrenamiento,normal
+catálogo de pagos,listar_por_dominio,entrenamiento,normal
+¿Qué hago si no existe el servicio que necesito?,reportar_brecha,entrenamiento,normal
+"No hay servicio para lo que busco, ¿cómo procedo?",reportar_brecha,entrenamiento,normal
+¿Cómo solicito un servicio nuevo?,reportar_brecha,entrenamiento,normal
+"Encontré una brecha, ¿a quién se la reporto?",reportar_brecha,entrenamiento,normal
+si ninguna API cubre la funcionalidad que sigue,reportar_brecha,entrenamiento,normal
+¿Puedo extender un servicio existente en lugar de crear otro?,reportar_brecha,entrenamiento,normal
+¿Cuál es el proceso para pedir un endpoint nuevo?,reportar_brecha,entrenamiento,normal
+"faltan servicios para mi pantalla, ¿qué recomiendas?",reportar_brecha,entrenamiento,normal
+¿Cómo documento una funcionalidad sin cobertura?,reportar_brecha,entrenamiento,normal
+"No existe nada para chequeras, ¿qué hago?",reportar_brecha,entrenamiento,dificil
+"no encontré el servicio, ¿qué sigue?",reportar_brecha,entrenamiento,normal
+¿qué pasa si falta un endpoint?,reportar_brecha,entrenamiento,normal
+quiero reportar una brecha,reportar_brecha,entrenamiento,normal
+¿cómo registro una brecha?,reportar_brecha,entrenamiento,normal
+"no existe un servicio para eso, ¿qué hago?",reportar_brecha,entrenamiento,normal
+¿a quién le pido un servicio nuevo?,reportar_brecha,entrenamiento,normal
+necesito crear un nuevo servicio,reportar_brecha,entrenamiento,normal
+¿conviene crear un servicio o extender uno?,reportar_brecha,entrenamiento,normal
+¿qué pasos sigo cuando no hay cobertura?,reportar_brecha,entrenamiento,normal
+"mi requerimiento tiene brechas, ¿qué hago con ellas?",reportar_brecha,entrenamiento,normal
+¿cómo escalo una funcionalidad no cubierta?,reportar_brecha,entrenamiento,normal
+¿quién aprueba nuevos endpoints?,reportar_brecha,entrenamiento,normal
+"la cobertura salió en 50%, ¿cómo cubro lo que falta?",reportar_brecha,entrenamiento,normal
+¿qué hago con las funciones sin servicio?,reportar_brecha,entrenamiento,normal
+no hay api para lo que necesito,reportar_brecha,entrenamiento,normal
+¿y si no hay nada?,reportar_brecha,entrenamiento,dificil
+¿y ahora qué hago con lo que falta?,reportar_brecha,entrenamiento,dificil
+¿se puede reutilizar algo en vez de construir?,reportar_brecha,entrenamiento,normal
+¿cómo pido que agreguen un servicio al inventario?,reportar_brecha,entrenamiento,normal
+procedimiento para servicios nuevos,reportar_brecha,entrenamiento,normal
+¿qué información necesita arquitectura para evaluar una brecha?,reportar_brecha,entrenamiento,normal
+registrar faltante de servicio,reportar_brecha,entrenamiento,normal
+"no cubre mi caso, ¿qué recomiendas?",reportar_brecha,entrenamiento,normal
+falta un servicio de chequeras,reportar_brecha,entrenamiento,dificil
+brecha de cobertura,reportar_brecha,entrenamiento,normal
+¿qué hago si el servicio existe pero le falta un campo?,reportar_brecha,entrenamiento,normal
+¿cómo propongo un endpoint?,reportar_brecha,entrenamiento,normal
+"ningún servicio sirve, ¿qué hago?",reportar_brecha,entrenamiento,normal
+¿hay que desarrollar uno nuevo?,reportar_brecha,entrenamiento,normal
+¿cómo evito duplicar un servicio?,reportar_brecha,entrenamiento,normal
+reportar funcionalidad faltante,reportar_brecha,entrenamiento,normal
+tengo una brecha en la pantalla de pagos,reportar_brecha,entrenamiento,normal
+¿cuál es el flujo cuando hay brecha?,reportar_brecha,entrenamiento,normal
+el inventario no tiene lo que busco,reportar_brecha,entrenamiento,normal
+"entonces no existe, ¿qué sigue?",reportar_brecha,entrenamiento,dificil
+¿cómo extiendo un servicio existente?,reportar_brecha,entrenamiento,normal
+¿qué hago si me falta un servicio para tarjetas?,reportar_brecha,entrenamiento,normal
+"no lo encontraste, ¿y ahora?",reportar_brecha,entrenamiento,dificil
+¿cómo documento una brecha para el equipo?,reportar_brecha,entrenamiento,normal
+¿quién construye los servicios nuevos?,reportar_brecha,entrenamiento,normal
+solicitar nuevo endpoint,reportar_brecha,entrenamiento,normal
+¿qué datos pongo en la solicitud de un servicio nuevo?,reportar_brecha,entrenamiento,normal
+"no hay cobertura para notificaciones, ¿qué hago?",reportar_brecha,entrenamiento,normal
+¿qué opciones tengo si no existe la API?,reportar_brecha,entrenamiento,normal
+brechas,reportar_brecha,entrenamiento,normal
+Te comparto el mockup de la pantalla,analizar_imagen,entrenamiento,normal
+Aquí está la imagen del diseño en Figma,analizar_imagen,entrenamiento,normal
+¿Puedes analizar este screenshot?,analizar_imagen,entrenamiento,normal
+te mando la imagen del front del formulario,analizar_imagen,entrenamiento,normal
+Revisa la captura de pantalla que adjunto,analizar_imagen,entrenamiento,normal
+¿Qué servicios necesita esta imagen?,analizar_imagen,entrenamiento,dificil
+subí un png con el diseño de la app,analizar_imagen,entrenamiento,normal
+Clasifica esta pantalla,analizar_imagen,entrenamiento,normal
+"tengo un boceto de la vista de pagos, ¿te lo paso?",analizar_imagen,entrenamiento,normal
+Mira esta foto del prototipo,analizar_imagen,entrenamiento,dificil
+adjunto la imagen de la pantalla,analizar_imagen,entrenamiento,normal
+aquí va la captura del front,analizar_imagen,entrenamiento,normal
+¿puedes revisar esta imagen?,analizar_imagen,entrenamiento,normal
+te paso el diseño en png,analizar_imagen,entrenamiento,normal
+analiza el mockup,analizar_imagen,entrenamiento,normal
+este es el screenshot de la app,analizar_imagen,entrenamiento,normal
+mira la imagen de la pantalla de pagos,analizar_imagen,entrenamiento,normal
+te comparto el diseño de Figma del onboarding,analizar_imagen,entrenamiento,normal
+¿qué servicios usa la pantalla de esta imagen?,analizar_imagen,entrenamiento,normal
+identifica la pantalla de la imagen,analizar_imagen,entrenamiento,normal
+sube imagen,analizar_imagen,entrenamiento,normal
+analizar imagen,analizar_imagen,entrenamiento,normal
+te envío una captura del frontend,analizar_imagen,entrenamiento,normal
+aquí está el jpg de la vista,analizar_imagen,entrenamiento,normal
+¿qué tipo de pantalla es esta imagen?,analizar_imagen,entrenamiento,normal
+revisa el boceto adjunto,analizar_imagen,entrenamiento,normal
+clasifica la captura,analizar_imagen,entrenamiento,normal
+"tengo el mockup del login, ¿te lo comparto?",analizar_imagen,entrenamiento,normal
+¿puedo mandarte una imagen?,analizar_imagen,entrenamiento,dificil
+¿aceptas imágenes?,analizar_imagen,entrenamiento,dificil
+imagen del diseño de transferencias,analizar_imagen,entrenamiento,normal
+screenshot del front de préstamos,analizar_imagen,entrenamiento,normal
+te adjunto el prototipo,analizar_imagen,entrenamiento,normal
+captura de pantalla del formulario de alta,analizar_imagen,entrenamiento,normal
+¿me ayudas a analizar este diseño?,analizar_imagen,entrenamiento,dificil
+"este es el mockup, dime qué servicios necesita",analizar_imagen,entrenamiento,normal
+mando la imagen del dashboard,analizar_imagen,entrenamiento,normal
+el diseño está en la imagen adjunta,analizar_imagen,entrenamiento,normal
+aquí está el archivo png de la pantalla,analizar_imagen,entrenamiento,normal
+analiza la foto del diseño,analizar_imagen,entrenamiento,normal
+procesa esta captura,analizar_imagen,entrenamiento,normal
+imagen adjunta,analizar_imagen,entrenamiento,normal
+revisa el diseño de Figma que te mandé,analizar_imagen,entrenamiento,normal
+screenshot adjunto,analizar_imagen,entrenamiento,normal
+te paso una foto de la pantalla del front,analizar_imagen,entrenamiento,normal
+"ya te mandé la imagen, ¿qué ves?",analizar_imagen,entrenamiento,dificil
+¿qué pantalla es?,analizar_imagen,entrenamiento,dificil
+diseño visual de la pantalla de seguros,analizar_imagen,entrenamiento,normal
+captura del frontend de hipotecas,analizar_imagen,entrenamiento,normal
+observa este mockup,analizar_imagen,entrenamiento,normal
+mira el boceto,analizar_imagen,entrenamiento,normal
+clasifica la imagen,analizar_imagen,entrenamiento,normal
+¿qué detectas en la imagen?,analizar_imagen,entrenamiento,normal
+interpreta la captura,analizar_imagen,entrenamiento,normal
+te comparto el png del front de transferencias,analizar_imagen,entrenamiento,normal
+¿Cuál es el clima en Guadalajara?,fuera_de_alcance,entrenamiento,normal
+Cuéntame un chiste de programadores,fuera_de_alcance,entrenamiento,normal
+¿Hay partido de futbol hoy?,fuera_de_alcance,entrenamiento,dificil
+Necesito un taxi al aeropuerto,fuera_de_alcance,entrenamiento,dificil
+¿Cuál es el horario de la sucursal?,fuera_de_alcance,entrenamiento,dificil
+¿Me recomiendas invertir en criptomonedas?,fuera_de_alcance,entrenamiento,dificil
+Escríbeme un poema,fuera_de_alcance,entrenamiento,normal
+¿Quién ganó el mundial?,fuera_de_alcance,entrenamiento,normal
+Necesito una receta de pastel,fuera_de_alcance,entrenamiento,dificil
+¿Cuánto cobra el banco por una tarjeta de crédito?,fuera_de_alcance,entrenamiento,dificil
+¿qué hora es?,fuera_de_alcance,entrenamiento,normal
+¿quién es el presidente de México?,fuera_de_alcance,entrenamiento,normal
+traduce hola al inglés,fuera_de_alcance,entrenamiento,normal
+¿cuánto es 2 más 2?,fuera_de_alcance,entrenamiento,normal
+recomiéndame una película,fuera_de_alcance,entrenamiento,normal
+¿qué día es hoy?,fuera_de_alcance,entrenamiento,normal
+necesito un doctor,fuera_de_alcance,entrenamiento,dificil
+¿hay tráfico en periférico?,fuera_de_alcance,entrenamiento,dificil
+servicio de lavandería cerca,fuera_de_alcance,entrenamiento,dificil
+¿hay servicio de internet en la oficina?,fuera_de_alcance,entrenamiento,dificil
+necesito pedir una pizza,fuera_de_alcance,entrenamiento,dificil
+¿cómo se hace una tortilla?,fuera_de_alcance,entrenamiento,normal
+háblame de la historia de Roma,fuera_de_alcance,entrenamiento,normal
+¿cuál es la capital de Francia?,fuera_de_alcance,entrenamiento,normal
+escríbeme un correo para mi jefe,fuera_de_alcance,entrenamiento,normal
+quiero abrir una cuenta en Netflix,fuera_de_alcance,entrenamiento,dificil
+¿me prestas dinero?,fuera_de_alcance,entrenamiento,dificil
+¿cuál es la tasa de interés de Cetes?,fuera_de_alcance,entrenamiento,dificil
+¿dónde está el cajero más cercano?,fuera_de_alcance,entrenamiento,dificil
+¿qué tarjeta de crédito me conviene?,fuera_de_alcance,entrenamiento,dificil
+programa una alarma,fuera_de_alcance,entrenamiento,normal
+pon música,fuera_de_alcance,entrenamiento,normal
+¿qué opinas del futbol?,fuera_de_alcance,entrenamiento,normal
+necesito vacaciones,fuera_de_alcance,entrenamiento,dificil
+¿existe dios?,fuera_de_alcance,entrenamiento,normal
+¿cómo arreglo mi computadora?,fuera_de_alcance,entrenamiento,normal
+escríbeme el código de un endpoint en Java,fuera_de_alcance,entrenamiento,dificil
+genera el código del servicio de pagos,fuera_de_alcance,entrenamiento,dificil
+dime un dato curioso,fuera_de_alcance,entrenamiento,normal
+¿va a llover mañana?,fuera_de_alcance,entrenamiento,normal
+¿cómo quedó el América?,fuera_de_alcance,entrenamiento,normal
+necesito un servicio de mudanza,fuera_de_alcance,entrenamiento,dificil
+¿hay vuelos a Cancún?,fuera_de_alcance,entrenamiento,dificil
+¿qué banco tiene mejores comisiones?,fuera_de_alcance,entrenamiento,dificil
+quiero cancelar mi suscripción de Spotify,fuera_de_alcance,entrenamiento,dificil
+recomiéndame un libro,fuera_de_alcance,entrenamiento,normal
+¿qué es la fotosíntesis?,fuera_de_alcance,entrenamiento,normal
+¿hay descuentos en Liverpool?,fuera_de_alcance,entrenamiento,dificil
+resuelve esta ecuación,fuera_de_alcance,entrenamiento,normal
+asdfgh,fuera_de_alcance,entrenamiento,normal
+registrar mi auto en la verificación,fuera_de_alcance,entrenamiento,dificil
+cotizar un viaje a Europa,fuera_de_alcance,entrenamiento,dificil
+¿quién pintó la Mona Lisa?,fuera_de_alcance,entrenamiento,normal
+necesito un abogado,fuera_de_alcance,entrenamiento,dificil
+¿cuánto cuesta un iPhone?,fuera_de_alcance,entrenamiento,dificil
+buenas,charla,prueba,normal
+¿qué opciones tengo contigo?,charla,prueba,normal
+"hola, ¿me ayudas?",charla,prueba,normal
+"gracias, muy amable",charla,prueba,normal
+bye,charla,prueba,normal
+¿en qué me puedes apoyar?,charla,prueba,normal
+que tal buenas tardes,charla,prueba,normal
+ayudame porfa,charla,prueba,dificil
+¿eres humano?,charla,prueba,normal
+hasta pronto,charla,prueba,normal
+buen día,charla,prueba,normal
+¿cómo te puedo usar?,charla,prueba,normal
+"gracias, eso es todo",charla,prueba,dificil
+q tal,charla,prueba,dificil
+¿hay un servicio para consultar los créditos de un cliente?,buscar_servicio,prueba,normal
+endpoint para eliminar una sesión,buscar_servicio,prueba,normal
+quiero cambiar la dirección de un cliente,buscar_servicio,prueba,normal
+¿existe api para comprobantes de pago?,buscar_servicio,prueba,normal
+consultar convenios disponibles,buscar_servicio,prueba,normal
+subir la imagen de la firma del cliente,buscar_servicio,prueba,dificil
+servicio para contratar una póliza,buscar_servicio,prueba,normal
+registrar una transferencia programada,buscar_servicio,prueba,normal
+necesito un servicio para abrir una inversión,buscar_servicio,prueba,dificil
+validar el código de verificación,buscar_servicio,prueba,normal
+¿hay API para dar de baja un beneficiario?,buscar_servicio,prueba,normal
+consultar las hipotecas de un cliente,buscar_servicio,prueba,normal
+necesito un servicio de notificaciones push,buscar_servicio,prueba,dificil
+obtener la amortización de un crédito,buscar_servicio,prueba,normal
+"pantalla de resumen financiero con cuentas, créditos y pólizas",analizar_requerimiento,prueba,normal
+formulario de pago de préstamo con monto y confirmación,analizar_requerimiento,prueba,normal
+historia de usuario: como asesor quiero dar de alta un beneficiario y verificarlo con SMS,analizar_requerimiento,prueba,normal
+pantalla de captura de solicitud de hipoteca con carga de documentos,analizar_requerimiento,prueba,dificil
+vista de cuenta con movimientos y estado de cuenta,analizar_requerimiento,prueba,normal
+requerimiento del frontend: login y recuperación de sesión,analizar_requerimiento,prueba,normal
+módulo de transferencias con historial y cancelación,analizar_requerimiento,prueba,normal
+caso de uso: el cliente cotiza un seguro y lo contrata,analizar_requerimiento,prueba,normal
+el front debe mostrar los datos del cliente y permitir editarlos,analizar_requerimiento,prueba,dificil
+pantalla para cifrar el número de tarjeta antes de guardarlo y mostrarlo descifrado,analizar_requerimiento,prueba,normal
+"pantalla de pagos con selección de convenio, monto y comprobante",analizar_requerimiento,prueba,normal
+historia de usuario: como cliente quiero cancelar mi seguro y ver la confirmación,analizar_requerimiento,prueba,normal
+formulario del front para capturar el domicilio del cliente,analizar_requerimiento,prueba,dificil
+"módulo de sesión: iniciar sesión, verificar código y cerrar sesión",analizar_requerimiento,prueba,normal
+"srv-040, ¿qué parámetros tiene?",detalle_servicio,prueba,normal
+contrato del primero,detalle_servicio,prueba,normal
+¿qué entrada pide el segundo?,detalle_servicio,prueba,normal
+¿qué responde SRV-018?,detalle_servicio,prueba,normal
+¿y el tercero qué recibe?,detalle_servicio,prueba,dificil
+¿cómo se consume el servicio de transferencias?,detalle_servicio,prueba,normal
+¿el segundo usa idempotencia?,detalle_servicio,prueba,dificil
+dame la URL del primero,detalle_servicio,prueba,normal
+más datos del segundo,detalle_servicio,prueba,dificil
+especificación de srv-055,detalle_servicio,prueba,normal
+¿qué parámetros tiene SRV-021?,detalle_servicio,prueba,normal
+contrato del segundo servicio,detalle_servicio,prueba,normal
+¿el primero es POST?,detalle_servicio,prueba,dificil
+¿qué regresa ese?,detalle_servicio,prueba,dificil
+¿qué dominios hay?,listar_dominios,prueba,normal
+muestra el catálogo completo,listar_dominios,prueba,normal
+¿cuántos servicios tienes en total?,listar_dominios,prueba,normal
+enlista todas las APIs,listar_dominios,prueba,normal
+¿qué áreas cubre el inventario?,listar_dominios,prueba,normal
+dame el resumen de dominios,listar_dominios,prueba,normal
+¿qué tienes?,listar_dominios,prueba,dificil
+ver todos los servicios,listar_dominios,prueba,normal
+¿qué categorías existen?,listar_dominios,prueba,normal
+¿cómo se divide el inventario?,listar_dominios,prueba,normal
+¿cuáles dominios hay en el catálogo?,listar_dominios,prueba,normal
+muestra todos los dominios,listar_dominios,prueba,normal
+¿qué servicios manejas?,listar_dominios,prueba,dificil
+listado de dominios del inventario,listar_dominios,prueba,normal
+servicios de transferencias,listar_por_dominio,prueba,normal
+¿qué hay de seguros?,listar_por_dominio,prueba,normal
+endpoints del dominio de cuentas,listar_por_dominio,prueba,normal
+lista lo de préstamos,listar_por_dominio,prueba,normal
+¿qué APIs tiene autenticación?,listar_por_dominio,prueba,normal
+servicios de documentos,listar_por_dominio,prueba,normal
+¿y los de hipotecas?,listar_por_dominio,prueba,dificil
+dominio de criptografía,listar_por_dominio,prueba,normal
+¿qué operaciones hay en clientes?,listar_por_dominio,prueba,normal
+muéstrame pagos,listar_por_dominio,prueba,normal
+servicios de préstamos,listar_por_dominio,prueba,normal
+¿qué endpoints tiene seguros?,listar_por_dominio,prueba,normal
+¿y los de documentos?,listar_por_dominio,prueba,dificil
+lista el dominio de transferencias,listar_por_dominio,prueba,normal
+¿qué hago si no hay un servicio para lo que necesito?,reportar_brecha,prueba,normal
+quiero solicitar un endpoint nuevo,reportar_brecha,prueba,normal
+¿cómo reporto una funcionalidad sin servicio?,reportar_brecha,prueba,normal
+"no encontré nada, ¿cómo sigo?",reportar_brecha,prueba,normal
+¿extiendo un servicio o creo uno?,reportar_brecha,prueba,normal
+¿y si no existe?,reportar_brecha,prueba,dificil
+"hay una brecha en mi pantalla, ¿qué hago?",reportar_brecha,prueba,normal
+¿quién atiende las solicitudes de servicios nuevos?,reportar_brecha,prueba,normal
+¿cómo registro lo que no está cubierto?,reportar_brecha,prueba,normal
+"falta un servicio para tarjetas de débito, ¿qué procede?",reportar_brecha,prueba,normal
+¿cómo pido un servicio que no existe?,reportar_brecha,prueba,normal
+¿qué procede cuando hay una brecha?,reportar_brecha,prueba,normal
+"ninguno me sirve, ¿qué hago?",reportar_brecha,prueba,dificil
+reportar un servicio faltante,reportar_brecha,prueba,normal
+te comparto la captura de la pantalla,analizar_imagen,prueba,normal
+analiza este diseño png,analizar_imagen,prueba,normal
+aquí está el mockup del front de seguros,analizar_imagen,prueba,normal
+¿te puedo pasar una foto del diseño?,analizar_imagen,prueba,dificil
+screenshot de la vista de pagos,analizar_imagen,prueba,normal
+revisa la imagen adjunta,analizar_imagen,prueba,normal
+clasifica este diseño de Figma,analizar_imagen,prueba,normal
+¿qué pantalla es la de la imagen?,analizar_imagen,prueba,dificil
+mando el boceto de la app,analizar_imagen,prueba,normal
+adjunto el jpg del formulario,analizar_imagen,prueba,normal
+te paso la captura del front de préstamos,analizar_imagen,prueba,normal
+revisa este mockup de Figma,analizar_imagen,prueba,normal
+¿puedo enviarte un diseño?,analizar_imagen,prueba,dificil
+aquí está el png de la pantalla de login,analizar_imagen,prueba,normal
+¿qué temperatura hace?,fuera_de_alcance,prueba,normal
+cuéntame una historia,fuera_de_alcance,prueba,normal
+¿hay concierto este fin?,fuera_de_alcance,prueba,dificil
+necesito un plomero,fuera_de_alcance,prueba,dificil
+¿dónde queda la sucursal más cercana?,fuera_de_alcance,prueba,dificil
+¿me conviene pedir un crédito hipotecario?,fuera_de_alcance,prueba,dificil
+¿quién escribió el Quijote?,fuera_de_alcance,prueba,normal
+escribe el código de una API en Python,fuera_de_alcance,prueba,dificil
+¿existe vida en Marte?,fuera_de_alcance,prueba,normal
+recomiéndame un restaurante,fuera_de_alcance,prueba,normal
+¿cuál es la mejor pizzería?,fuera_de_alcance,prueba,normal
+necesito un servicio de limpieza,fuera_de_alcance,prueba,dificil
+¿hay clases de inglés hoy?,fuera_de_alcance,prueba,dificil
+dime un refrán,fuera_de_alcance,prueba,normal
